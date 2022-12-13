@@ -84,7 +84,7 @@ The extension provides various ways to manage the local Fabric network. For e.g 
 - Start Network: Start the Docker containers if they are in a stopped state.
 - Restart Network: Stop and start the Docker containers. This might be useful if you see any errors during debugging related to stopped/failed containers.
 
-![Manage Fabric Network](https://bitbucket.org/sypdra/hyperledger-fabric-debugger/raw/cbfe9a908d94392f7859b5c9264b83717ad2a5f6/media/docs/manage-network.png)
+![Manage Fabric Network](https://github.com/spydra-tech/fabric-debugger/raw/main/media/docs/manage-network.png)
 
 ### Manage Wallet Identities
 By default, the extension, creates two users - one user 'Org1Admin' with an Admin NodeOU role and one user 'User1' with a Client NodeOU role for testing. Navigate to the Hyperledger Debugger Explorer to create additional identities that can be used for testing.

@@ -15,6 +15,10 @@
     "color": "#000000",
     "theme": "dark"
   },
+  "bugs": {
+    "url": "https://github.com/spydra-tech/fabric-debugger/issues",
+    "email": "info@spydra.app"
+  },
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.40.0"
