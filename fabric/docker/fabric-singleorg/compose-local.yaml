@@ -1,0 +1,116 @@
+version: '3.0'
+
+networks:
+  debug:
+    name: fabric_debug
+
+services:
+
+  debug-cli:
+    container_name: debug-cli
+    image: hyperledger/fabric-tools:2.4.7
+    labels:
+      service: hyperledger-fabric
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - FABRIC_LOGGING_SPEC=INFO
+      - FABRIC_CFG_PATH=/etc/hyperledger/fabric/sampleconfig
+      - CORE_PEER_ADDRESS=peer0.org1.debugger.com:5051
+      - CORE_PEER_TLS_ENABLED=false
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/local/organizations/peerOrganizations/org1.debugger.com/users/Org1Admin/msp
+    working_dir: /etc/hyperledger/fabric/scripts
+    command:
+      - /bin/bash
+      - -c
+      - |
+        configtxgen -profile SampleDevModeSolo -channelID syschannel -outputBlock genesisblock -configPath /etc/hyperledger/fabric/sampleconfig -outputBlock /etc/hyperledger/fabric/local/genesisblock
+        /bin/bash
+    volumes:
+        - ../../:/etc/hyperledger/fabric
+    networks:
+      - debug
+
+  orderer.debugger.com:
+    container_name: orderer.debugger.com
+    image: hyperledger/fabric-orderer:2.4.7
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_LOGGING_SPEC=INFO
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=5050
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:5053
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer.debugger.com:5443
+      - ORDERER_GENERAL_BOOTSTRAPFILE=/etc/hyperledger/fabric/local/genesisblock
+      - FABRIC_CFG_PATH=/etc/hyperledger/fabric/sampleconfig
+      - ORDERER_GENERAL_GENESISPROFILE=SampleDevModeSolo
+      - ORDERER_GENERAL_LOCALMSPID=Org1MSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+    working_dir: /root
+    command: orderer
+    volumes:
+        - ../../:/etc/hyperledger/fabric
+        - ../../local/organizations/peerOrganizations/org1.debugger.com/peers/peer0.org1.debugger.com/msp:/var/hyperledger/orderer/msp
+    ports:
+      - 5050:5050
+      - 5053:5053
+      - 5443:5443
+    depends_on:
+      - debug-cli
+    networks:
+      - debug
+  
+  debug-couchdb1:
+    container_name: debug-couchdb1
+    image: couchdb:3.2.2
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    ports:
+      - "9984:5984"
+    networks:
+      - debug
+
+  peer0.org1.debugger.com:
+    container_name: peer0.org1.debugger.com
+    image: hyperledger/fabric-peer:2.4.7
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/hyperledger/fabric/sampleconfig
+      - FABRIC_LOGGING_SPEC=INFO
+      # Peer specific variables
+      - CORE_PEER_ID=peer0.org1.debugger.com
+      - CORE_PEER_ADDRESS=peer0.org1.debugger.com:5051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:5051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org1.debugger.com:5052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:5052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.debugger.com:5051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.debugger.com:5051
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.org1.debugger.com:5444
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/peer/msp
+      - CORE_CHAINCODE_EXECUTETIMEOUT=600s
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=debug-couchdb1:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
+    volumes:
+        - ../../:/etc/hyperledger/fabric
+        - ../../local/organizations/peerOrganizations/org1.debugger.com/peers/peer0.org1.debugger.com/:/etc/hyperledger/peer
+    working_dir: /root
+    command: peer node start --peer-chaincodedev=true
+    ports:
+      - 5051:5051
+      - 5052:5052
+      - 5444:5444
+    depends_on:
+      - orderer.debugger.com
+      - debug-couchdb1
+    networks:
+      - debug
