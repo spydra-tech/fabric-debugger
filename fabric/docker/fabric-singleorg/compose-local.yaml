@@ -104,6 +104,8 @@ services:
         - ../../:/etc/hyperledger/fabric
         - ../../local/organizations/peerOrganizations/org1.debugger.com/peers/peer0.org1.debugger.com/:/etc/hyperledger/peer
     working_dir: /root
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command: peer node start --peer-chaincodedev=true
     ports:
       - 5051:5051

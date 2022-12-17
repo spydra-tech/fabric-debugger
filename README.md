@@ -1,6 +1,6 @@
 # Hyperledger Fabric Debugger for Visual Studio Code
 
-Hyperledger Fabric Debugger Plugin by [Spydra](https://spydra.app) is an Extension for Visual Studio Code that makes it easy for developers to build and debug Chaincode right from within the IDE. Typically, developing Chaincode for Fabric requires developers to set up a Fabric environment, deploy the developed Chaincode to it and then debug it by printing log messages to the console. In addition, installing a new version of Chaincode in a Fabric network is not as simple as uploading the new code. Developers have to execute the chaincode lifecycle commands for every modification to upgrade the Chaincode. This makes it very difficult to develop code in an iterative manner.
+Hyperledger Fabric Debugger Plugin by [Spydra](https://www.spydra.app/?utm_source=vs_marketplace&utm_medium=fabric_debugger_plugin) is an Extension for Visual Studio Code that makes it easy for developers to build and debug Chaincode right from within the IDE. Typically, developing Chaincode for Fabric requires developers to set up a Fabric environment, deploy the developed Chaincode to it and then debug it by printing log messages to the console. In addition, installing a new version of Chaincode in a Fabric network is not as simple as uploading the new code. Developers have to execute the chaincode lifecycle commands for every modification to upgrade the Chaincode. This makes it very difficult to develop code in an iterative manner.
 
 By using the Hyperledger Fabric Debug Plugin, a developer does not need to set up a Hyperledger Fabric network to deploy and test Chaincode. The plugin will automatically set up a local Fabric environment and manage the process of installing the Chaincode.
 
@@ -19,11 +19,14 @@ By using the Hyperledger Fabric Debug Plugin, a developer does not need to set u
             {
                 "name": "Debug Chaincode",
                 "type": "hlf-go",
-                "request": "launch"
+                "request": "launch",
+                "isCaas": false
             }
         ]
     }
     ```
+    **If you are trying to debug a Chaincode developed for the Fabric External Chaincode as a Service model, please set isCaas: true.
+
     The same configuration can also be added by clicking on the **Add Configuration** button and selecting *"Go: Debug Fabric Chaincode"* option.
 
     ![Launch Configuration](https://github.com/spydra-tech/fabric-debugger/raw/main/media/docs/launch-add-config.png)
@@ -58,9 +61,10 @@ By using the Hyperledger Fabric Debug Plugin, a developer does not need to set u
 ### Debugging
 Debugging chaincodes written in Go and Node.js (Javascript/TypeScript is supported). A custom launch configuration .vscode/launch.json file is needed with the following three mandatory values:
 
-- name: Provide a name of your choice for user configuration
-- type: Use "hlf-go" for Go Chaincode and "hlf-node" for Node.js Chaincode.
-- request: use value as "launch"
+- **name**: Provide a name of your choice for user configuration
+- **type**: Use "hlf-go" for Go Chaincode and "hlf-node" for Node.js Chaincode.
+- **request**: use value as "launch"
+- **isCaas**: true if the Chaincode is developed using the [External Chaincode as a Service model](https://hyperledger-fabric.readthedocs.io/en/latest/cc_service.html), otherwise false
 
 You can use the Add Configuration button on the launch.json page and choose either "Go: Debug Fabric Chaincode" or "Node.js: Debug Fabric Chaincode" options to add the required launch configuration.
 
@@ -168,4 +172,12 @@ This typically happens when the launch.json file is not created with the right d
 #### 4. I've installed the extension and started the local fabric network also. When I submit a transaction in the .fabric file, I get an error "Start the Network or Start Debugging(F5) before submitting a transaction to Fabric"
 
 Even though the local fabric network is started, in order for you to submit a transaction defined in the .fabric file, the Chaincode has to be started in Debug mode. Press F5 or select the Run and Debug button from the [Run view](https://code.visualstudio.com/docs/editor/debugging#_run-view) to start debugging.
+
+#### 5. When I start debugging the Chaincode, I get the error "error starting chaincode: ccid must be specified"
+
+This usually means that the Chaincode that you are trying to debug is developed using the Fabric [External Chaincode as a Service](https://hyperledger-fabric.readthedocs.io/en/latest/cc_service.html) model. Stop debugging, set the property "isCaas":true in the .vscode/launch.json file and start debugging again.
+
+#### 6. When I start debugging the Chaincode, I get a message "You don't have an extension for debugging 'JSON with Comments'"
+
+This typically means that the launch.json file is not created. Create the launch settings file as mentioned [here](#quick-start), select the code file that contains the entry point for the Chaincode and start debugging again.
 

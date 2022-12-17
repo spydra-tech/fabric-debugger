@@ -7,8 +7,9 @@ export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider
 
     public async resolveDebugConfiguration(folder: vscode.WorkspaceFolder | undefined, debugConfiguration: vscode.DebugConfiguration): Promise<vscode.DebugConfiguration> {
 		
-		if(!HlfProvider.islocalNetworkStarted){
+		if(!HlfProvider.islocalNetworkStarted || Settings.isCaas !== debugConfiguration.isCaas){
 			//Launch Fabric network if its not up yet.
+			Settings.isCaas = debugConfiguration.isCaas;
 			HlfProvider.islocalNetworkStarted = await HlfProvider.createNetwork();
 			//If we failed to start the network, then return undefined to cancel the debugging session
 			if(!HlfProvider.islocalNetworkStarted){
@@ -37,7 +38,13 @@ export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider
 				else{
 					debugConfiguration.program = path.join(folder.uri.fsPath, 'node_modules', '.bin', 'fabric-chaincode-node');
 				}
-				debugConfiguration.args.push('start');
+
+				if(debugConfiguration.isCaas){
+					debugConfiguration.args.push('server');
+				}
+				else{
+					debugConfiguration.args.push('start');
+				}
 				break;
 			}
 		}
@@ -50,11 +57,20 @@ export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider
             debugConfiguration.mode = 'auto';
         }
 
-		//Add environment variables for Fabric 'dev' mode
-		debugConfiguration.env = { ...debugConfiguration.env, ...Settings.debugEnv };
 
-		//Add peer address to the arguments
-		debugConfiguration.args.push('--peer.address', Settings.peerAddress);
+		if(debugConfiguration.isCaas){
+			//Add environment variables for Fabric CaaS model
+			debugConfiguration.env = { ...debugConfiguration.env, ...Settings.debugCaasEnv };
+		}
+		else{
+			//Add environment variables for Fabric 'dev' mode
+			debugConfiguration.env = { ...debugConfiguration.env, ...Settings.debugEnv };
+		}
+
+		if(!debugConfiguration.isCaas){
+			//Add peer address to the arguments
+			debugConfiguration.args.push('--peer.address', Settings.peerAddress);
+		}
 
 		//Simply changing the Debugger type will result in an error as the debugger type has already been determined by this time
 		//We need to cancel the existing debugging session and start a new one with the modified configuration.
