@@ -3,9 +3,9 @@
   "displayName": "Hyperledger Fabric Debugger",
   "description": "Extension for Visual Studio Code that makes it easy for developers to build and debug Chaincode right from within the IDE.",
   "author": "Spydra",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "Spydra",
-  "homepage": "https://spydra.app",
+  "homepage": "https://www.spydra.app/?utm_source=vs_marketplace&utm_medium=fabric_debugger_plugin",
   "icon": "media/spydra-blue.png",
   "repository": {
     "type": "git",
@@ -36,7 +36,7 @@
     "Distributed Ledger",
     "Chaincode",
     "Smart Contract",
-    "Debugger",
+    "Debug",
     "DLT"
   ],
   "pricing": "Free",
@@ -200,7 +200,8 @@
             "body": {
               "name": "Debug Chaincode",
               "type": "hlf-go",
-              "request": "launch"
+              "request": "launch",
+              "isCaas": false
             }
           }
         ],
@@ -220,6 +221,11 @@
                 "type": "string",
                 "description": "Path to the program folder (or any go file within that folder) when in `debug` or `test` mode, and to the pre-built binary file to debug in `exec` mode. If it is not an absolute path, the extension interpretes it as a workspace relative path.",
                 "default": "${workspaceFolder}"
+              },
+              "isCaas": {
+                "type": "boolean",
+                "description": "Whether the Chaincode is written to run as the newer Chaincode as an External Service model.",
+                "default": false
               },
               "mode": {
                 "enum": [
@@ -466,7 +472,8 @@
             "body": {
               "name": "Debug Chaincode",
               "type": "hlf-node",
-              "request": "launch"
+              "request": "launch",
+              "isCaas": false
             }
           }
         ],
@@ -476,6 +483,11 @@
               "program": {
                 "type": "string",
                 "description": "Absolute path to the program."
+              },
+              "isCaas": {
+                "type": "boolean",
+                "description": "Whether the Chaincode is written to run as the newer Chaincode as an External Service model.",
+                "default": false
               },
               "cwd": {
                 "type": "string",

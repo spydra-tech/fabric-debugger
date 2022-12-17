@@ -60,7 +60,8 @@ export class HlfRequestCommandProvider {
         }
         let result: string = await ShellCommand.execDockerComposeBash(DockerComposeFiles.localNetwork, "debug-cli", "/etc/hyperledger/fabric/scripts/sendTransactionInternal.sh", chaincodeArgs);
 
-        if(result.indexOf("error building chaincode: error building image: failed to get chaincode package for external build:") > -1){
+        if(result.indexOf("error building chaincode: error building image: failed to get chaincode package for external build:") > -1
+        || result.indexOf("connect: connection refused") > -1){
             Logger.instance().showMessage(LogType.error, "Start Debugging(F5) before submitting a transaction to Fabric");
             result = "Error: cannot debug Chaincode. response: status:500 message: \"Start Debugging(F5) before submitting a transaction to Fabric\"";
         }

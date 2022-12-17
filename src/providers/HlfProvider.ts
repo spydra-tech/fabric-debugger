@@ -47,8 +47,16 @@ export class HlfProvider {
                     await ShellCommand.execDockerComposeBash(DockerComposeFiles.localNetwork, "debug-cli", "/etc/hyperledger/fabric/scripts/createChannelInternal.sh");
                     progress.report({ increment: 85, message: "Deploying chaincode" });
 
-                    //Deploy chaincode on the channel
-                    let chaincodeArgs: string[] = [Settings.defaultChaincodeId, Settings.defaultChaincodeVersion];
+                    if(Settings.isCaas){
+                        //Install chaincode on peers
+                        await this.installCaasChaincode();
+                    }
+                    else{
+                        Settings.defaultChaincodePackageId = `${Settings.defaultChaincodeId}:${Settings.defaultChaincodeVersion}`;
+                    }
+
+                    //Approve and Commit chaincode on the channel
+                    let chaincodeArgs: string[] = [Settings.defaultChaincodeId, Settings.defaultChaincodeVersion, Settings.defaultChaincodePackageId];
                     await ShellCommand.execDockerComposeBash(DockerComposeFiles.localNetwork, "debug-cli", "/etc/hyperledger/fabric/scripts/deployChaincodeInternal.sh", chaincodeArgs);
                     progress.report({ increment: 100});
 
@@ -115,6 +123,9 @@ export class HlfProvider {
     }
 
     public static async removeNetwork(): Promise<void>{
+        //Stop existing debug session
+        vscode.debug.stopDebugging(vscode.debug.activeDebugSession);
+
         await vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
             title: "Removing local Fabric network",
@@ -146,5 +157,14 @@ export class HlfProvider {
                 Logger.instance().showMessage(LogType.info, "Local Fabric Network removed");
             }
         );
+    }
+
+    public static async installCaasChaincode(): Promise<void>{
+        let chaincodeArgs: string[] = [Settings.defaultChaincodeId];
+        //Package the chaincode first
+        Settings.defaultChaincodePackageId = (await ShellCommand.execDockerComposeBash(DockerComposeFiles.localNetwork, "debug-cli", "/etc/hyperledger/fabric/scripts/packageCaasChaincode.sh", chaincodeArgs)).replace("\n", "");
+        Settings.debugCaasEnv.CHAINCODE_ID = Settings.defaultChaincodePackageId;
+        //Install the chaincode on the peers
+        await ShellCommand.execDockerComposeBash(DockerComposeFiles.localNetwork, "debug-cli", "/etc/hyperledger/fabric/scripts/installCaasChaincode.sh", chaincodeArgs);
     }
 }
