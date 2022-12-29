@@ -7,4 +7,6 @@ else
     configtxgen -channelID default -outputCreateChannelTx /etc/hyperledger/fabric/local/default.tx -profile SampleSingleMSPChannel -configPath $FABRIC_CFG_PATH
     peer channel create -o orderer.debugger.com:5050 -c default -f /etc/hyperledger/fabric/local/default.tx
     peer channel join -b default.block
+
+    ../scripts/setAnchorPeer.sh 1 default
 fi

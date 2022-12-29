@@ -52,7 +52,7 @@ peer:
         enabled: true
         # endorsementTimeout is the duration the gateway waits for a response
         # from other endorsing peers before returning a timeout error to the client.
-        endorsementTimeout: 30s
+        endorsementTimeout: 600s
         # dialTimeout is the duration the gateway waits for a connection
         # to other network nodes.
         dialTimeout: 2m
@@ -78,7 +78,7 @@ peer:
             interval: 60s
             # Timeout is the duration the client waits for a response from
             # peer nodes before closing the connection
-            timeout: 20s
+            timeout: 600s
         # DeliveryClient keepalive settings for communication with ordering
         # nodes.
         deliveryClient:
@@ -616,7 +616,7 @@ chaincode:
     # build the image, which might take more time. In production environment,
     # the chaincode image is unlikely to be deleted, so the timeout could be
     # reduced accordingly.
-    executetimeout: 30s
+    executetimeout: 600s
 
     # There are 2 modes: "dev" and "net".
     # In dev mode, user runs the chaincode after starting peer from

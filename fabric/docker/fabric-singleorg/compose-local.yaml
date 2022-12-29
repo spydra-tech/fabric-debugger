@@ -72,7 +72,7 @@ services:
       - COUCHDB_USER=admin
       - COUCHDB_PASSWORD=adminpw
     ports:
-      - "9984:5984"
+      - "5984:5984"
     networks:
       - debug
 
