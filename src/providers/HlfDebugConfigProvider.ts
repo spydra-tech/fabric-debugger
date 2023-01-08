@@ -7,7 +7,7 @@ export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider
 
     public async resolveDebugConfiguration(folder: vscode.WorkspaceFolder | undefined, debugConfiguration: vscode.DebugConfiguration): Promise<vscode.DebugConfiguration> {
 		
-		if(!HlfProvider.islocalNetworkStarted || Settings.isCaas !== debugConfiguration.isCaas){
+		if(!HlfProvider.islocalNetworkStarted || (await HlfProvider.shouldRestart(debugConfiguration))){
 			//Launch Fabric network if its not up yet.
 			Settings.isCaas = debugConfiguration.isCaas;
 			HlfProvider.islocalNetworkStarted = await HlfProvider.createNetwork();

@@ -33,6 +33,7 @@ export class Settings {
   static readonly defaultChaincodeVersion: string = "v1";
   static dockerDir: string = "";
   static isCaas: boolean = false;
+  static singleOrgProj: string = "fabric-singleorg";
 
   static set defaultChaincodeId(chaincodeName: string){
     Settings._defaultChaincodeId = chaincodeName;

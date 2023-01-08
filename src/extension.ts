@@ -18,7 +18,7 @@ import { WalletItem } from './views/trees/WalletItem';
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
 	const logger: Logger = Logger.instance();
 
-	Settings.dockerDir = context.asAbsolutePath("fabric/docker/fabric-singleorg");
+	Settings.dockerDir = context.asAbsolutePath(`fabric/docker/${Settings.singleOrgProj}`);
 	HlfProvider.setChaincodeName();
 
 	//Register the Debug configuration providers for Golang and Node

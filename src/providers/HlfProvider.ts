@@ -23,7 +23,7 @@ export class HlfProvider {
 
             await vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
-                title: "Creating local Fabric network",
+                title: "Starting local Fabric network",
                 cancellable: true
                 }, async (progress) => {
                     //Create the network by invoking Docker compose
@@ -167,4 +167,21 @@ export class HlfProvider {
         //Install the chaincode on the peers
         await ShellCommand.execDockerComposeBash(DockerComposeFiles.localNetwork, "debug-cli", "/etc/hyperledger/fabric/scripts/installCaasChaincode.sh", chaincodeArgs);
     }
+
+    public static async shouldRestart(debugConfiguration: vscode.DebugConfiguration): Promise<boolean> {
+		let shouldRestart: boolean = false;
+
+        //If external chaincode setting has changed, we should restart
+		if(Settings.isCaas !== debugConfiguration.isCaas){
+			shouldRestart = true;
+		}
+
+        //Check if all the docker containers are running. If not, we should try to restart
+		const result = await ShellCommand.runDockerCompose(DockerComposeFiles.localNetwork, ["ls", "--filter", `name=${Settings.singleOrgProj}`], false);
+        if(result.toLowerCase().indexOf("running(5)") === -1){
+            shouldRestart = true;
+        }
+        
+        return shouldRestart;
+	}
 }

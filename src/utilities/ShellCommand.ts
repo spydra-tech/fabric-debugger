@@ -88,7 +88,7 @@ export class ShellCommand {
 
     public static async runDockerCompose(composeFileName: string, args: Array<string>, printLogs: boolean = true): Promise<string> {
         const cmd: string = "docker-compose";
-        let dockerArgs: string[] = ["-p", "fabric-singleorg", "-f", composeFileName];
+        let dockerArgs: string[] = ["-p", constants.Settings.singleOrgProj, "-f", composeFileName];
 
         return this.run(cmd, constants.Settings.dockerDir, [...dockerArgs, ...args], printLogs);
     }
