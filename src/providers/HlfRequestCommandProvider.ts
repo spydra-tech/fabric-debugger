@@ -60,7 +60,10 @@ export class HlfRequestCommandProvider {
               
             chaincodeArgs.push(wallet);
         }
+
+        var startTime = process.hrtime();
         let result: string = await ShellCommand.execDockerComposeBash(DockerComposeFiles.localNetwork, "debug-cli", "/etc/hyperledger/fabric/scripts/sendTransactionInternal.sh", chaincodeArgs);
+        const elapsedTime = TelemetryLogger.instance().parseHrtimeToMs(process.hrtime(startTime));
 
         if(result.indexOf("error building chaincode: error building image: failed to get chaincode package for external build:") > -1
         || result.indexOf("connect: connection refused") > -1){
@@ -77,7 +80,7 @@ export class HlfRequestCommandProvider {
 
         //Render the result
         const responseWebView: HlfResponseWebview = HlfResponseWebview.instance();
-        responseWebView.render(result);
+        responseWebView.render(result, elapsedTime);
     }
 
     private getValueWithoutCase(requestJson: any, transactionType: string): string {
