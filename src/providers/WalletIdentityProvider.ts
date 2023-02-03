@@ -3,9 +3,11 @@ import { ShellCommand } from '../utilities/ShellCommand';
 import { Logger } from '../utilities/Logger';
 import { LogType, DockerComposeFiles, Settings } from '../utilities/Constants';
 import { WalletItem } from '../views/trees/WalletItem';
+import { TelemetryLogger } from '../utilities/TelemetryLogger';
 
 export class WalletIdentityProvider {
     public async createIdentity() {
+        TelemetryLogger.instance().sendTelemetryEvent('CreateIdentity');
         const username = await vscode.window.showInputBox({ prompt: 'Provide a username for the identity', 
                                                         placeHolder: "Username" });
         if (username) {
@@ -36,6 +38,7 @@ export class WalletIdentityProvider {
     }
 
     public async removeIdentity(element?: WalletItem) {
+        TelemetryLogger.instance().sendTelemetryEvent('RemoveIdentity');
         if(element && element.label){
             const username: string = element.label.toString();
             const identityArgs: string[] = [username];

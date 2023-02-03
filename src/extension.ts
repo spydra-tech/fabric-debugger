@@ -11,12 +11,15 @@ import { Settings } from './utilities/Constants';
 import { Logger } from './utilities/Logger';
 import { WalletIdentityProvider } from './providers/WalletIdentityProvider';
 import { WalletItem } from './views/trees/WalletItem';
+import { TelemetryLogger } from './utilities/TelemetryLogger';
 
 
 // This method is called when the extension is activated
 // The extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
+	var startTime = process.hrtime();
 	const logger: Logger = Logger.instance();
+	const telemetryLogger = TelemetryLogger.instance();
 
 	Settings.dockerDir = context.asAbsolutePath(`fabric/docker/${Settings.singleOrgProj}`);
 	HlfProvider.setChaincodeName();
@@ -48,9 +51,14 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 	context.subscriptions.push(vscode.commands.registerCommand('identity.remove', (element: WalletItem) => walletIdentityProvider.removeIdentity(element)));
 	context.subscriptions.push(vscode.commands.registerCommand('identity.refresh', () => walletTreeProvider.refresh()));
 	context.subscriptions.push(vscode.window.registerTreeDataProvider('hlfWallets', walletTreeProvider));
+
+	const elapsedTime = telemetryLogger.parseHrtimeToMs(process.hrtime(startTime));
+	telemetryLogger.sendTelemetryEvent('Activate', null, {'activationDuration': elapsedTime});
 }
 
 // This method is called when the extension is deactivated
 export async function deactivate() {
+	await TelemetryLogger.instance().sendTelemetryEvent('DeActivate');
+	TelemetryLogger.instance().dispose();
 	await HlfProvider.stopNetwork();
 }

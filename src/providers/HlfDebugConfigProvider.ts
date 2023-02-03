@@ -1,12 +1,14 @@
 import path = require('path');
 import * as vscode from 'vscode';
 import {DebuggerType, ChaincodeLang, Settings, LogType} from '../utilities/Constants';
+import { TelemetryLogger } from '../utilities/TelemetryLogger';
 import { HlfProvider } from './HlfProvider';
 
 export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider {
 
     public async resolveDebugConfiguration(folder: vscode.WorkspaceFolder | undefined, debugConfiguration: vscode.DebugConfiguration): Promise<vscode.DebugConfiguration> {
-		
+		TelemetryLogger.instance().sendTelemetryEvent('ResolveDebug', {'debugType': debugConfiguration.type, 'isCaas': debugConfiguration.isCaas});
+
 		if(!HlfProvider.islocalNetworkStarted || (await HlfProvider.shouldRestart(debugConfiguration))){
 			//Launch Fabric network if its not up yet.
 			Settings.isCaas = debugConfiguration.isCaas;

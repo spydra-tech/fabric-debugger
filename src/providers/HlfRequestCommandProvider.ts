@@ -5,6 +5,7 @@ import { HlfResponseWebview } from '../views/HlfResponseWebview';
 import { Logger } from '../utilities/Logger';
 import * as JSON5 from 'json5';
 import { WalletIdentityProvider } from './WalletIdentityProvider';
+import { TelemetryLogger } from '../utilities/TelemetryLogger';
 
 export class HlfRequestCommandProvider {
     private lineSplit: RegExp = /\r?\n/g;
@@ -28,6 +29,7 @@ export class HlfRequestCommandProvider {
             methodName = this.getValueWithoutCase(requestJson, "invoke");
         }
 
+        TelemetryLogger.instance().sendTelemetryEvent('RequestCommand', {transactionType: transactionType});
         //Get the identity to be used for the request
         const wallet = this.getValueWithoutCase(requestJson, "identity");
 
