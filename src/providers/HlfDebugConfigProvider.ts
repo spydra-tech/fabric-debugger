@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import {DebuggerType, ChaincodeLang, Settings, LogType} from '../utilities/Constants';
 import { TelemetryLogger } from '../utilities/TelemetryLogger';
 import { HlfProvider } from './HlfProvider';
+import * as fs from 'fs/promises';
 
 export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider {
 
@@ -46,6 +47,14 @@ export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider
 				}
 				else{
 					debugConfiguration.args.push('start');
+				}
+
+				const files: string[] = await fs.readdir(folder.uri.fsPath);
+				if (files.includes('tsconfig.json')) {
+					debugConfiguration.preLaunchTask = 'tsc: build - tsconfig.json';
+					debugConfiguration.outFiles = [
+						'${workspaceFolder}/dist/**/*.js'
+					];
 				}
 				break;
 			}
