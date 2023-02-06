@@ -64,8 +64,8 @@ export class HlfProvider {
                     progress.report({ increment: 100});
 
                     HlfProvider.islocalNetworkStarted = true;
-                    vscode.commands.executeCommand('identity.refresh');
-                    vscode.commands.executeCommand('localnetwork.refresh');
+                    vscode.commands.executeCommand('hlf.identity.refresh');
+                    vscode.commands.executeCommand('hlf.localnetwork.refresh');
                     logger.showMessage(LogType.info, "Local Fabric Network started");
                 });
                 const elapsedTime = telemetryLogger.parseHrtimeToMs(process.hrtime(startTime));
@@ -116,8 +116,8 @@ export class HlfProvider {
                 }
 
                 HlfProvider.islocalNetworkStarted = false;
-                vscode.commands.executeCommand('identity.refresh');
-                vscode.commands.executeCommand('localnetwork.refresh');
+                vscode.commands.executeCommand('hlf.identity.refresh');
+                vscode.commands.executeCommand('hlf.localnetwork.refresh');
                 Logger.instance().showMessage(LogType.info, "Local Fabric Network stopped");
             }
         );
@@ -163,8 +163,8 @@ export class HlfProvider {
                 }
 
                 HlfProvider.islocalNetworkStarted = false;
-                vscode.commands.executeCommand('identity.refresh');
-                vscode.commands.executeCommand('localnetwork.refresh');
+                vscode.commands.executeCommand('hlf.identity.refresh');
+                vscode.commands.executeCommand('hlf.localnetwork.refresh');
                 Logger.instance().showMessage(LogType.info, "Local Fabric Network removed");
             }
         );

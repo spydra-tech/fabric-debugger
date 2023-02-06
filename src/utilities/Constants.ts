@@ -49,7 +49,16 @@ export class Settings {
   }
 }
 
-export class DockerComposeFiles {
-  static readonly localCa: string = "compose-local-ca.yaml";
-  static readonly localNetwork: string = "compose-local.yaml";
+export enum DockerComposeFiles {
+  localCa = "compose-local-ca.yaml",
+  localNetwork = "compose-local.yaml"
+}
+
+export enum Links {
+  documentation = 'https://github.com/spydra-tech/fabric-debugger/blob/main/README.md',
+  contribute = 'https://github.com/spydra-tech/fabric-debugger',
+  reportIssue = 'https://github.com/spydra-tech/fabric-debugger/issues',
+  contactUs = 'https://www.spydra.app/contact-us?utm_source=vs_marketplace&utm_medium=fabric_debugger_plugin',
+  review = 'https://marketplace.visualstudio.com/items?itemName=Spydra.hyperledger-fabric-debugger&ssr=false#review-details',
+  spydra = 'https://spydra.app'
 }

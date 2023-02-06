@@ -32,11 +32,13 @@
   "keywords": [
     "Hyperledger Fabric",
     "Hyperledger",
+    "Fabric",
     "Blockchain",
     "Distributed Ledger",
     "Chaincode",
     "Smart Contract",
     "Debug",
+    "Debugging",
     "DLT"
   ],
   "pricing": "Free",
@@ -46,71 +48,76 @@
     "onLanguage:jsonc",
     "onView:hlfNetworks",
     "onView:hlfWallets",
-    "onCommand:fabric.request",
-    "onCommand:localnetwork.start",
-    "onCommand:localnetwork.stop",
-    "onCommand:localnetwork.restart",
-    "onCommand:localnetwork.remove",
-    "onCommand:localnetwork.refresh",
-    "onCommand:identity.create",
-    "onCommand:identity.remove",
-    "onCommand:identity.refresh"
+    "onCommand:hlf.fabric.request",
+    "onCommand:hlf.localnetwork.start",
+    "onCommand:hlf.localnetwork.stop",
+    "onCommand:hlf.localnetwork.restart",
+    "onCommand:hlf.localnetwork.remove",
+    "onCommand:hlf.localnetwork.refresh",
+    "onCommand:hlf.identity.create",
+    "onCommand:hlf.identity.remove",
+    "onCommand:hlf.identity.refresh"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "fabric.request",
+        "command": "hlf.fabric.request",
         "title": "Send Request",
         "category": "Hlf Debugger"
       },
       {
-        "command": "localnetwork.start",
+        "command": "hlf.localnetwork.start",
         "title": "Start Network",
         "category": "Hlf Debugger",
         "icon": "$(debug-start)"
       },
       {
-        "command": "localnetwork.stop",
+        "command": "hlf.localnetwork.stop",
         "title": "Stop Network",
         "category": "Hlf Debugger",
         "icon": "$(debug-stop)"
       },
       {
-        "command": "localnetwork.restart",
+        "command": "hlf.localnetwork.restart",
         "title": "Restart Network",
         "category": "Hlf Debugger",
         "icon": "$(debug-restart)"
       },
       {
-        "command": "localnetwork.remove",
+        "command": "hlf.localnetwork.remove",
         "title": "Remove Network",
         "category": "Hlf Debugger",
         "icon": "$(desktop-download)"
       },
       {
-        "command": "localnetwork.refresh",
+        "command": "hlf.localnetwork.refresh",
         "title": "Refresh Network",
         "category": "Hlf Debugger",
         "icon": "$(refresh)"
       },
       {
-        "command": "identity.create",
+        "command": "hlf.identity.create",
         "title": "Create User",
         "category": "Hlf Debugger",
         "icon": "$(plus)"
       },
       {
-        "command": "identity.remove",
+        "command": "hlf.identity.remove",
         "title": "Remove User",
         "category": "Hlf Debugger",
         "icon": "$(remove-close)"
       },
       {
-        "command": "identity.refresh",
+        "command": "hlf.identity.refresh",
         "title": "Refresh Wallet",
         "category": "Hlf Debugger",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "hlf.link.open",
+        "title": "Open External Link",
+        "category": "Hlf Debugger"
       }
     ],
     "languages": [
@@ -139,50 +146,54 @@
         {
           "id": "hlfWallets",
           "name": "Wallets"
+        },
+        {
+          "id": "hlfResources",
+          "name": "Resources"
         }
       ]
     },
     "menus": {
       "view/title": [
         {
-          "command": "localnetwork.refresh",
+          "command": "hlf.localnetwork.refresh",
           "when": "view == hlfNetworks",
           "group": "navigation"
         },
         {
-          "command": "identity.refresh",
+          "command": "hlf.identity.refresh",
           "when": "view == hlfWallets",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "localnetwork.start",
+          "command": "hlf.localnetwork.start",
           "when": "view == hlfNetworks && viewItem == network",
           "group": "inline"
         },
         {
-          "command": "localnetwork.stop",
+          "command": "hlf.localnetwork.stop",
           "when": "view == hlfNetworks && viewItem == network",
           "group": "inline"
         },
         {
-          "command": "localnetwork.restart",
+          "command": "hlf.localnetwork.restart",
           "when": "view == hlfNetworks && viewItem == network",
           "group": "inline"
         },
         {
-          "command": "localnetwork.remove",
+          "command": "hlf.localnetwork.remove",
           "when": "view == hlfNetworks && viewItem == network",
           "group": "inline"
         },
         {
-          "command": "identity.create",
+          "command": "hlf.identity.create",
           "when": "view == hlfWallets && viewItem == organization",
           "group": "inline"
         },
         {
-          "command": "identity.remove",
+          "command": "hlf.identity.remove",
           "when": "view == hlfWallets && viewItem == wallet",
           "group": "inline"
         }

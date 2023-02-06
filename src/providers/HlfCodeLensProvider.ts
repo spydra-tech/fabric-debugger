@@ -46,7 +46,7 @@ export class HlfCodeLensProvider implements vscode.CodeLensProvider {
                     const cmd: vscode.Command = {
                         arguments: [codeRange],
                         title: 'Send Request',
-                        command: 'fabric.request'
+                        command: 'hlf.fabric.request'
                     };
                     codeLenses.push(new vscode.CodeLens(range, cmd));
                 }
@@ -68,7 +68,7 @@ export class HlfCodeLensProvider implements vscode.CodeLensProvider {
             const cmd: vscode.Command ={
                 arguments: [codeRange],
                 title: 'Send Request',
-                command: 'fabric.request'
+                command: 'hlf.fabric.request'
             };
             codeLenses.push(new vscode.CodeLens(range, cmd));
         }

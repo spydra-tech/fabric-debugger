@@ -27,7 +27,7 @@ export class WalletIdentityProvider {
                     Logger.instance().showMessage(LogType.error, "Start the Network or Start Debugging(F5) before creating an identity");
                 }
                 else{
-                    vscode.commands.executeCommand('identity.refresh');
+                    vscode.commands.executeCommand('hlf.identity.refresh');
                     Logger.instance().showMessageOnly(LogType.info, `Created and enrolled identity for user: ${username}`);
                 }
             }
@@ -48,7 +48,7 @@ export class WalletIdentityProvider {
                 Logger.instance().showMessage(LogType.error, "Start the Network or Start Debugging(F5) before modifying an identity");
             }
             else{
-                vscode.commands.executeCommand('identity.refresh');
+                vscode.commands.executeCommand('hlf.identity.refresh');
                 Logger.instance().showMessageOnly(LogType.info, `Removed identity for user: ${username}`);
             }
         }
