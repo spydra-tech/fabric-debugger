@@ -46,7 +46,7 @@ export class HlfRequestCommandProvider {
                 payloadArgs.push(`'\"${requestJson.args[arg].toString().split('"').join('\\"')}\"'`);
             }
         }
-        const payloadLines = `${[payloadArgs.join(',')]}`;
+        const payloadLines = `[${[payloadArgs.join(',')]}]`;
 
         //Send the transaction to Fabric
         const chaincodeArgs: string[] = [transactionType, Settings.defaultChaincodeId, methodName, payloadLines];
