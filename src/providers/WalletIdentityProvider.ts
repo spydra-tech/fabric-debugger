@@ -3,9 +3,11 @@ import { ShellCommand } from '../utilities/ShellCommand';
 import { Logger } from '../utilities/Logger';
 import { LogType, DockerComposeFiles, Settings } from '../utilities/Constants';
 import { WalletItem } from '../views/trees/WalletItem';
+import { TelemetryLogger } from '../utilities/TelemetryLogger';
 
 export class WalletIdentityProvider {
     public async createIdentity() {
+        TelemetryLogger.instance().sendTelemetryEvent('CreateIdentity');
         const username = await vscode.window.showInputBox({ prompt: 'Provide a username for the identity', 
                                                         placeHolder: "Username" });
         if (username) {
@@ -25,7 +27,7 @@ export class WalletIdentityProvider {
                     Logger.instance().showMessage(LogType.error, "Start the Network or Start Debugging(F5) before creating an identity");
                 }
                 else{
-                    vscode.commands.executeCommand('identity.refresh');
+                    vscode.commands.executeCommand('hlf.identity.refresh');
                     Logger.instance().showMessageOnly(LogType.info, `Created and enrolled identity for user: ${username}`);
                 }
             }
@@ -36,6 +38,7 @@ export class WalletIdentityProvider {
     }
 
     public async removeIdentity(element?: WalletItem) {
+        TelemetryLogger.instance().sendTelemetryEvent('RemoveIdentity');
         if(element && element.label){
             const username: string = element.label.toString();
             const identityArgs: string[] = [username];
@@ -45,7 +48,7 @@ export class WalletIdentityProvider {
                 Logger.instance().showMessage(LogType.error, "Start the Network or Start Debugging(F5) before modifying an identity");
             }
             else{
-                vscode.commands.executeCommand('identity.refresh');
+                vscode.commands.executeCommand('hlf.identity.refresh');
                 Logger.instance().showMessageOnly(LogType.info, `Removed identity for user: ${username}`);
             }
         }

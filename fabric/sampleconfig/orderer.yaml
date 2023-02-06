@@ -49,7 +49,7 @@ General:
         ServerInterval: 7200s
         # ServerTimeout is the duration the server waits for a response from
         # a client before closing the connection.
-        ServerTimeout: 20s
+        ServerTimeout: 600s
 
     # Since all nodes should be consistent it is recommended to keep
     # the default value of 100MB for MaxRecvMsgSize & MaxSendMsgSize

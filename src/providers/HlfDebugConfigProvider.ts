@@ -1,13 +1,16 @@
 import path = require('path');
 import * as vscode from 'vscode';
 import {DebuggerType, ChaincodeLang, Settings, LogType} from '../utilities/Constants';
+import { TelemetryLogger } from '../utilities/TelemetryLogger';
 import { HlfProvider } from './HlfProvider';
+import * as fs from 'fs/promises';
 
 export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider {
 
     public async resolveDebugConfiguration(folder: vscode.WorkspaceFolder | undefined, debugConfiguration: vscode.DebugConfiguration): Promise<vscode.DebugConfiguration> {
-		
-		if(!HlfProvider.islocalNetworkStarted || Settings.isCaas !== debugConfiguration.isCaas){
+		TelemetryLogger.instance().sendTelemetryEvent('ResolveDebug', {'debugType': debugConfiguration.type, 'isCaas': debugConfiguration.isCaas});
+
+		if(!HlfProvider.islocalNetworkStarted || (await HlfProvider.shouldRestart(debugConfiguration))){
 			//Launch Fabric network if its not up yet.
 			Settings.isCaas = debugConfiguration.isCaas;
 			HlfProvider.islocalNetworkStarted = await HlfProvider.createNetwork();
@@ -44,6 +47,14 @@ export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider
 				}
 				else{
 					debugConfiguration.args.push('start');
+				}
+
+				const files: string[] = await fs.readdir(folder.uri.fsPath);
+				if (files.includes('tsconfig.json')) {
+					debugConfiguration.preLaunchTask = 'tsc: build - tsconfig.json';
+					debugConfiguration.outFiles = [
+						'${workspaceFolder}/dist/**/*.js'
+					];
 				}
 				break;
 			}

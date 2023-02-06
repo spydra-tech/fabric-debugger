@@ -1,10 +1,14 @@
 import * as vscode from 'vscode';
+import { TelemetryLogger } from '../utilities/TelemetryLogger';
 
 export class HlfCodeLensProvider implements vscode.CodeLensProvider {
     private lineSplit: RegExp = /\r?\n/g;
 
-    //Get the code areas correspondin to the various request sections
+    //Get the code areas corresponding to the various request sections
     provideCodeLenses(document: vscode.TextDocument): vscode.ProviderResult<vscode.CodeLens[]> {
+        //var startTime = process.hrtime();
+        //const telemetryLogger = TelemetryLogger.instance();
+
         const codeLenses: vscode.CodeLens[] = [];
         const lines: string[] = document.getText().split(this.lineSplit);
 
@@ -42,7 +46,7 @@ export class HlfCodeLensProvider implements vscode.CodeLensProvider {
                     const cmd: vscode.Command = {
                         arguments: [codeRange],
                         title: 'Send Request',
-                        command: 'fabric.request'
+                        command: 'hlf.fabric.request'
                     };
                     codeLenses.push(new vscode.CodeLens(range, cmd));
                 }
@@ -64,10 +68,13 @@ export class HlfCodeLensProvider implements vscode.CodeLensProvider {
             const cmd: vscode.Command ={
                 arguments: [codeRange],
                 title: 'Send Request',
-                command: 'fabric.request'
+                command: 'hlf.fabric.request'
             };
             codeLenses.push(new vscode.CodeLens(range, cmd));
         }
+
+        //const elapsedTime = telemetryLogger.parseHrtimeToMs(process.hrtime(startTime));
+        //telemetryLogger.sendTelemetryEvent('CodeLens', null, {'codeLensDuration': elapsedTime});
 
         return codeLenses;
     }    

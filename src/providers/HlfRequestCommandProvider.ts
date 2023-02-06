@@ -5,6 +5,7 @@ import { HlfResponseWebview } from '../views/HlfResponseWebview';
 import { Logger } from '../utilities/Logger';
 import * as JSON5 from 'json5';
 import { WalletIdentityProvider } from './WalletIdentityProvider';
+import { TelemetryLogger } from '../utilities/TelemetryLogger';
 
 export class HlfRequestCommandProvider {
     private lineSplit: RegExp = /\r?\n/g;
@@ -28,6 +29,7 @@ export class HlfRequestCommandProvider {
             methodName = this.getValueWithoutCase(requestJson, "invoke");
         }
 
+        TelemetryLogger.instance().sendTelemetryEvent('RequestCommand', {transactionType: transactionType});
         //Get the identity to be used for the request
         const wallet = this.getValueWithoutCase(requestJson, "identity");
 
@@ -44,7 +46,7 @@ export class HlfRequestCommandProvider {
                 payloadArgs.push(`'\"${requestJson.args[arg].toString().split('"').join('\\"')}\"'`);
             }
         }
-        const payloadLines = `${[payloadArgs.join(',')]}`;
+        const payloadLines = `[${[payloadArgs.join(',')]}]`;
 
         //Send the transaction to Fabric
         const chaincodeArgs: string[] = [transactionType, Settings.defaultChaincodeId, methodName, payloadLines];
@@ -58,7 +60,10 @@ export class HlfRequestCommandProvider {
               
             chaincodeArgs.push(wallet);
         }
+
+        var startTime = process.hrtime();
         let result: string = await ShellCommand.execDockerComposeBash(DockerComposeFiles.localNetwork, "debug-cli", "/etc/hyperledger/fabric/scripts/sendTransactionInternal.sh", chaincodeArgs);
+        const elapsedTime = TelemetryLogger.instance().parseHrtimeToMs(process.hrtime(startTime));
 
         if(result.indexOf("error building chaincode: error building image: failed to get chaincode package for external build:") > -1
         || result.indexOf("connect: connection refused") > -1){
@@ -75,7 +80,7 @@ export class HlfRequestCommandProvider {
 
         //Render the result
         const responseWebView: HlfResponseWebview = HlfResponseWebview.instance();
-        responseWebView.render(result);
+        responseWebView.render(result, elapsedTime);
     }
 
     private getValueWithoutCase(requestJson: any, transactionType: string): string {

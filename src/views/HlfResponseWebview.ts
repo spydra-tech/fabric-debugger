@@ -31,9 +31,9 @@ export class HlfResponseWebview {
           );
     }
 
-    public async render(message: string) {
+    public async render(message: string, duration: number) {
         this.interpretMessage(message);
-        this._panel.webview.html = this.getWebviewContent();
+        this._panel.webview.html = this.getWebviewContent(duration);
     }
 
     private interpretMessage(message: string): void {
@@ -75,7 +75,7 @@ export class HlfResponseWebview {
         }
     }
 
-    private getWebviewContent(): string {
+    private getWebviewContent(duration: number): string {
         return `<!DOCTYPE html>
             <html lang="en">
             <head>
@@ -123,7 +123,8 @@ export class HlfResponseWebview {
             <body>
                 <p>
                     <span style="color:${this._headlineColor};"><strong>${this._message}</strong></span><br>
-                    <span><strong>Response:</strong>${this._status}</span>
+                    <span><strong>Response:</strong>${this._status}</span><br>
+                    <span><strong>Time:</strong>${duration} ms</span>
                 </p>
                 <span><strong>Result:</strong><br>${this._result}</span>
             </body>

@@ -4,6 +4,7 @@ import { LogType, DockerComposeFiles, Settings } from '../utilities/Constants';
 import { Logger } from '../utilities/Logger';
 import { setTimeout } from "timers/promises";
 import { Prerequisites } from '../utilities/Prerequisites';
+import { TelemetryLogger } from '../utilities/TelemetryLogger';
 
 export class HlfProvider {
     public static islocalNetworkStarted: boolean = false;
@@ -21,9 +22,11 @@ export class HlfProvider {
                 return false;
             }
 
+            var startTime = process.hrtime();
+            const telemetryLogger = TelemetryLogger.instance();
             await vscode.window.withProgress({
                 location: vscode.ProgressLocation.Notification,
-                title: "Creating local Fabric network",
+                title: "Starting local Fabric network",
                 cancellable: true
                 }, async (progress) => {
                     //Create the network by invoking Docker compose
@@ -61,10 +64,12 @@ export class HlfProvider {
                     progress.report({ increment: 100});
 
                     HlfProvider.islocalNetworkStarted = true;
-                    vscode.commands.executeCommand('identity.refresh');
-                    vscode.commands.executeCommand('localnetwork.refresh');
+                    vscode.commands.executeCommand('hlf.identity.refresh');
+                    vscode.commands.executeCommand('hlf.localnetwork.refresh');
                     logger.showMessage(LogType.info, "Local Fabric Network started");
                 });
+                const elapsedTime = telemetryLogger.parseHrtimeToMs(process.hrtime(startTime));
+                telemetryLogger.sendTelemetryEvent('CreateNetwork', null, {'createNetworkDuration': elapsedTime});
             return true;
         }
         catch(error){
@@ -85,6 +90,8 @@ export class HlfProvider {
         //Stop existing debug session
         vscode.debug.stopDebugging(vscode.debug.activeDebugSession);
 
+        var startTime = process.hrtime();
+        const telemetryLogger = TelemetryLogger.instance();
         await vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
             title: "Stopping local Fabric network",
@@ -109,11 +116,13 @@ export class HlfProvider {
                 }
 
                 HlfProvider.islocalNetworkStarted = false;
-                vscode.commands.executeCommand('identity.refresh');
-                vscode.commands.executeCommand('localnetwork.refresh');
+                vscode.commands.executeCommand('hlf.identity.refresh');
+                vscode.commands.executeCommand('hlf.localnetwork.refresh');
                 Logger.instance().showMessage(LogType.info, "Local Fabric Network stopped");
             }
         );
+        const elapsedTime = telemetryLogger.parseHrtimeToMs(process.hrtime(startTime));
+        telemetryLogger.sendTelemetryEvent('StopNetwork', null, {'stopNetworkDuration': elapsedTime});
     }
 
     public static async restartNetwork(): Promise<void>{
@@ -126,6 +135,8 @@ export class HlfProvider {
         //Stop existing debug session
         vscode.debug.stopDebugging(vscode.debug.activeDebugSession);
 
+        var startTime = process.hrtime();
+        const telemetryLogger = TelemetryLogger.instance();
         await vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
             title: "Removing local Fabric network",
@@ -152,11 +163,13 @@ export class HlfProvider {
                 }
 
                 HlfProvider.islocalNetworkStarted = false;
-                vscode.commands.executeCommand('identity.refresh');
-                vscode.commands.executeCommand('localnetwork.refresh');
+                vscode.commands.executeCommand('hlf.identity.refresh');
+                vscode.commands.executeCommand('hlf.localnetwork.refresh');
                 Logger.instance().showMessage(LogType.info, "Local Fabric Network removed");
             }
         );
+        const elapsedTime = telemetryLogger.parseHrtimeToMs(process.hrtime(startTime));
+        telemetryLogger.sendTelemetryEvent('RemoveNetwork', null, {'removeNetworkDuration': elapsedTime});
     }
 
     public static async installCaasChaincode(): Promise<void>{
@@ -167,4 +180,21 @@ export class HlfProvider {
         //Install the chaincode on the peers
         await ShellCommand.execDockerComposeBash(DockerComposeFiles.localNetwork, "debug-cli", "/etc/hyperledger/fabric/scripts/installCaasChaincode.sh", chaincodeArgs);
     }
+
+    public static async shouldRestart(debugConfiguration: vscode.DebugConfiguration): Promise<boolean> {
+		let shouldRestart: boolean = false;
+
+        //If external chaincode setting has changed, we should restart
+		if(Settings.isCaas !== debugConfiguration.isCaas){
+			shouldRestart = true;
+		}
+
+        //Check if all the docker containers are running. If not, we should try to restart
+		const result = await ShellCommand.runDockerCompose(DockerComposeFiles.localNetwork, ["ls", "--filter", `name=${Settings.singleOrgProj}`], false);
+        if(result.toLowerCase().indexOf("running(5)") === -1){
+            shouldRestart = true;
+        }
+        
+        return shouldRestart;
+	}
 }

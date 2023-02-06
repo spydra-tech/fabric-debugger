@@ -1,5 +1,6 @@
 import { OutputChannel, window } from 'vscode';
 import * as constants from './Constants';
+import { TelemetryLogger } from './TelemetryLogger';
 
 export class Logger {
     private readonly _outputChannel: OutputChannel;
@@ -20,16 +21,18 @@ export class Logger {
         this._outputChannel.appendLine(`[${(new Date().toLocaleTimeString())} - ${type}] ${message}`);
     }
 
-    //Show popup message
+    //Show popup message and log the error
     public showMessage(type: constants.LogType, message: string){
         this.log(type, message);
         this.showMessageOnly(type, message);
     }
 
+    //Show popup message only
     public showMessageOnly(type: constants.LogType, message: string){
         switch(type){
 			case constants.LogType.error: {
 				window.showErrorMessage(message);
+                TelemetryLogger.instance().sendTelemetryErrorEvent('Error', {message: message});
 				break;
 			}
 			case constants.LogType.warning: {
