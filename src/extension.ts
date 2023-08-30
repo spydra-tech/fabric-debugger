@@ -57,7 +57,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 	//Register resource providers
 	const resourceTreeProvider: ResourcesTreeProvider = new ResourcesTreeProvider();
 	context.subscriptions.push(vscode.window.registerTreeDataProvider('hlfResources', resourceTreeProvider));
-	context.subscriptions.push(vscode.commands.registerCommand('hlf.link.open', (link: vscode.Uri) => Commands.openLink(link)));
+	context.subscriptions.push(vscode.commands.registerCommand('hlf.link.open', (link: vscode.Uri, linkTitle: string) => Commands.openLink(link, linkTitle)));
 
 	const elapsedTime = telemetryLogger.parseHrtimeToMs(process.hrtime(startTime));
 	telemetryLogger.sendTelemetryEvent('Activate', null, {'activationDuration': elapsedTime});

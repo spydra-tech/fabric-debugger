@@ -22,7 +22,7 @@ export class ResourceItem extends HlfTreeItem {
         item.command = {
             command: "hlf.link.open",
             title: '',
-            arguments: [item.resourceUri],
+            arguments: [item.resourceUri, this.message],
         };
 
         return item;
