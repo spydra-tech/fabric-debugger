@@ -32,7 +32,7 @@ export class Logger {
         switch(type){
 			case constants.LogType.error: {
 				window.showErrorMessage(message);
-                TelemetryLogger.instance().sendTelemetryErrorEvent('Error', {message: message});
+                TelemetryLogger.instance().sendTelemetryEvent('Error', {message: message});
 				break;
 			}
 			case constants.LogType.warning: {
