@@ -8,7 +8,7 @@ services:
 
   debug-cli:
     container_name: debug-cli
-    image: hyperledger/fabric-tools:2.4.7
+    image: hyperledger/fabric-tools:2.5
     labels:
       service: hyperledger-fabric
     tty: true
@@ -35,7 +35,7 @@ services:
 
   orderer.debugger.com:
     container_name: orderer.debugger.com
-    image: hyperledger/fabric-orderer:2.4.7
+    image: hyperledger/fabric-orderer:2.5
     labels:
       service: hyperledger-fabric
     environment:
@@ -65,7 +65,7 @@ services:
   
   debug-couchdb1:
     container_name: debug-couchdb1
-    image: couchdb:3.2.2
+    image: couchdb:3.3
     labels:
       service: hyperledger-fabric
     environment:
@@ -78,7 +78,7 @@ services:
 
   peer0.org1.debugger.com:
     container_name: peer0.org1.debugger.com
-    image: hyperledger/fabric-peer:2.4.7
+    image: hyperledger/fabric-peer:2.5
     labels:
       service: hyperledger-fabric
     environment:

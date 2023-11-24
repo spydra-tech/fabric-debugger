@@ -7,7 +7,7 @@ networks:
 services:
 
   ca.org1.debugger.com:
-    image: hyperledger/fabric-ca:1.5.5
+    image: hyperledger/fabric-ca:1.5
     labels:
       service: hyperledger-fabric
     environment:
