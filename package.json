@@ -238,6 +238,11 @@
                 "description": "Whether the Chaincode is written to run as the newer Chaincode as an External Service model.",
                 "default": false
               },
+              "chaincodeName": {
+                "type": "string",
+                "description": "The name of the chaincode which will be deployed on the network. If a name is not provided, it is automatically set as the current Vscode workspace name.",
+                "default": null
+              },
               "mode": {
                 "enum": [
                   "auto",
@@ -499,6 +504,11 @@
                 "type": "boolean",
                 "description": "Whether the Chaincode is written to run as the newer Chaincode as an External Service model.",
                 "default": false
+              },
+              "chaincodeName": {
+                "type": "string",
+                "description": "The name of the chaincode which will be deployed on the network. If a name is not provided, it is automatically set as the current Vscode workspace name.",
+                "default": null
               },
               "cwd": {
                 "type": "string",

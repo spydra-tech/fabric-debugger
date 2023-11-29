@@ -4,6 +4,7 @@ import {DebuggerType, ChaincodeLang, Settings, LogType} from '../utilities/Const
 import { TelemetryLogger } from '../utilities/TelemetryLogger';
 import { HlfProvider } from './HlfProvider';
 import * as fs from 'fs/promises';
+import { WebsiteView } from '../views/WebsiteView';
 
 export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider {
 
@@ -13,10 +14,15 @@ export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider
 		if(!HlfProvider.islocalNetworkStarted || (await HlfProvider.shouldRestart(debugConfiguration))){
 			//Launch Fabric network if its not up yet.
 			Settings.isCaas = debugConfiguration.isCaas;
+			HlfProvider.setChaincodeName(debugConfiguration.chaincodeName);
 			HlfProvider.islocalNetworkStarted = await HlfProvider.createNetwork();
 			//If we failed to start the network, then return undefined to cancel the debugging session
 			if(!HlfProvider.islocalNetworkStarted){
 				return undefined;
+			}
+
+			if(Settings.spdrLinkMessageShown === 0){
+				WebsiteView.showMessage();
 			}
 		}
 

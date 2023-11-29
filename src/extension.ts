@@ -24,7 +24,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 	const telemetryLogger = TelemetryLogger.instance();
 
 	Settings.dockerDir = context.asAbsolutePath(`fabric/docker/${Settings.singleOrgProj}`);
-	HlfProvider.setChaincodeName();
 
 	//Register the Debug configuration providers for Golang and Node
 	context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('hlf-go', new HlfDebugConfigProvider()));

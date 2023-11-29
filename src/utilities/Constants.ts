@@ -40,13 +40,10 @@ export class Settings {
   }
 
   static get defaultChaincodeId(){
-    if(Settings.isCaas){
-      return `${Settings._defaultChaincodeId}-caas`;
-    }
-    else{
       return Settings._defaultChaincodeId;
-    }
   }
+
+  static spdrLinkMessageShown: number = 0;
 }
 
 export enum DockerComposeFiles {
@@ -58,7 +55,8 @@ export enum Links {
   documentation = 'https://github.com/spydra-tech/fabric-debugger/blob/main/README.md',
   contribute = 'https://github.com/spydra-tech/fabric-debugger',
   reportIssue = 'https://github.com/spydra-tech/fabric-debugger/issues',
-  contactUs = 'https://www.spydra.app/contact-us?utm_source=vs_marketplace&utm_medium=fabric_debugger_plugin',
+  contactUs = 'https://www.spydra.app/schedule-a-demo?utm_source=vs_marketplace&utm_medium=fabric_debugger_plugin',
   review = 'https://marketplace.visualstudio.com/items?itemName=Spydra.hyperledger-fabric-debugger&ssr=false#review-details',
-  spydra = 'https://spydra.app'
+  spydra = 'https://www.spydra.app?utm_source=vs_marketplace&utm_medium=fabric_debugger_plugin',
+  getStarted = 'https://console.spydra.app/?utm_source=vs_marketplace&utm_medium=fabric_debugger_plugin'
 }

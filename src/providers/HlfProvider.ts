@@ -78,12 +78,17 @@ export class HlfProvider {
         }
     }
 
-    public static setChaincodeName(){
-        if(vscode.workspace.name){
+    public static setChaincodeName(name: string){
+        if(name){
+            Settings.defaultChaincodeId = name.replace(/\W+/g, "-").replace(/^-+/, "").replace(/-+$/, "");
+        } else if(vscode.workspace.name) {
             //Chaincode name is the current workspace name. Replace all non-alphanumeric characters with "-".
             Settings.defaultChaincodeId = vscode.workspace.name.replace(/\W+/g, "-").replace(/^-+/, "").replace(/-+$/, "");
-            Settings.debugEnv.CORE_CHAINCODE_ID_NAME = `${Settings.defaultChaincodeId}:${Settings.defaultChaincodeVersion}`;
+            if(Settings.isCaas){
+                Settings.defaultChaincodeId = `${Settings.defaultChaincodeId}-caas`;
+            }
         }
+        Settings.debugEnv.CORE_CHAINCODE_ID_NAME = `${Settings.defaultChaincodeId}:${Settings.defaultChaincodeVersion}`;
     }
 
     public static async stopNetwork(): Promise<void>{
@@ -188,6 +193,12 @@ export class HlfProvider {
 		if(Settings.isCaas !== debugConfiguration.isCaas){
 			shouldRestart = true;
 		}
+
+        //if chaincode name has changed, we should restart
+        if(debugConfiguration.chaincodeName && Settings.defaultChaincodeId !== debugConfiguration.chaincodeName){
+			shouldRestart = true;
+		}
+
 
         //Check if all the docker containers are running. If not, we should try to restart
 		const result = await ShellCommand.runDockerCompose(DockerComposeFiles.localNetwork, ["ls", "--filter", `name=${Settings.singleOrgProj}`], false);
