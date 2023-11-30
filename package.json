@@ -669,6 +669,7 @@
   },
   "dependencies": {
     "@vscode/extension-telemetry": "^0.6.2",
+    "fabric-network": "^2.2.20",
     "json-pretty-html": "^1.1.6",
     "json5": "^2.2.3"
   }

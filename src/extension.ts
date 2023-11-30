@@ -8,7 +8,6 @@ import { HlfDebugConfigProvider } from './providers/HlfDebugConfigProvider';
 import { NetworkTreeProvider } from './providers/NetworkTreeProvider';
 import { WalletTreeProvider } from './providers/WalletTreeProvider';
 import { Settings } from './utilities/Constants';
-import { Logger } from './utilities/Logger';
 import { WalletIdentityProvider } from './providers/WalletIdentityProvider';
 import { WalletItem } from './views/trees/WalletItem';
 import { TelemetryLogger } from './utilities/TelemetryLogger';
@@ -20,7 +19,6 @@ import { Commands } from './utilities/Commands';
 // The extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
 	var startTime = process.hrtime();
-	const logger: Logger = Logger.instance();
 	const telemetryLogger = TelemetryLogger.instance();
 
 	Settings.dockerDir = context.asAbsolutePath(`fabric/docker/${Settings.singleOrgProj}`);

@@ -33,7 +33,17 @@ export class Settings {
   static readonly defaultChaincodeVersion: string = "v1";
   static dockerDir: string = "";
   static isCaas: boolean = false;
-  static singleOrgProj: string = "fabric-singleorg";
+  static readonly singleOrgProj: string = "fabric-singleorg";
+  static readonly defaultChannel: string = "default";
+
+  static singleOrgSettings = {
+    caDomain: "ca.org1.debugger.com",
+    domain: "org1.debugger.com",
+    adminUser: "Org1Admin",
+    name: "Org1",
+    msp: "Org1MSP",
+    ccpFileName: "org1.json"
+  };
 
   static set defaultChaincodeId(chaincodeName: string){
     Settings._defaultChaincodeId = chaincodeName;

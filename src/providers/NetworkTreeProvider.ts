@@ -3,6 +3,7 @@ import { HlfTreeItem } from '../views/trees/HlfTreeItem';
 import { NetworkItem } from '../views/trees/NetworkItem';
 import { OrganizationItem } from '../views/trees/OrganizationItem';
 import { HlfProvider } from './HlfProvider';
+import { Settings } from '../utilities/Constants';
 
 export class NetworkTreeProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
 
@@ -26,7 +27,7 @@ export class NetworkTreeProvider implements vscode.TreeDataProvider<vscode.TreeI
                 tree.push(new OrganizationItem("Organizations", vscode.TreeItemCollapsibleState.Expanded));
             }
             if (element instanceof OrganizationItem) {
-                tree.push(new vscode.TreeItem("Org1", vscode.TreeItemCollapsibleState.None));
+                tree.push(new vscode.TreeItem(Settings.singleOrgSettings.name, vscode.TreeItemCollapsibleState.None));
             }
         }
         else{

@@ -21,7 +21,7 @@ export class WalletIdentityProvider {
               }) === -1){
 
                 const identityArgs: string[] = [username];
-                const result: string = await ShellCommand.execDockerComposeSh(DockerComposeFiles.localCa, "ca.org1.debugger.com", "/etc/hyperledger/fabric/scripts/registerEnrollIdentity.sh", identityArgs);
+                const result: string = await ShellCommand.execDockerComposeSh(DockerComposeFiles.localCa, Settings.singleOrgSettings.caDomain, "/etc/hyperledger/fabric/scripts/registerEnrollIdentity.sh", identityArgs);
 
                 if(result.search(/service .* is not running container .*/gi)>-1){
                     Logger.instance().showMessage(LogType.error, "Start the Network or Start Debugging(F5) before creating an identity");
@@ -42,7 +42,7 @@ export class WalletIdentityProvider {
         if(element && element.label){
             const username: string = element.label.toString();
             const identityArgs: string[] = [username];
-            const result: string = await ShellCommand.execDockerComposeSh(DockerComposeFiles.localCa, "ca.org1.debugger.com", "/etc/hyperledger/fabric/scripts/removeIdentity.sh", identityArgs);
+            const result: string = await ShellCommand.execDockerComposeSh(DockerComposeFiles.localCa, Settings.singleOrgSettings.caDomain, "/etc/hyperledger/fabric/scripts/removeIdentity.sh", identityArgs);
 
             if(result.search(/service .* is not running container .*/gi)>-1){
                 Logger.instance().showMessage(LogType.error, "Start the Network or Start Debugging(F5) before modifying an identity");
@@ -56,7 +56,7 @@ export class WalletIdentityProvider {
 
     static async getwallets(): Promise<string[]>{
         try{
-            const result: string = await ShellCommand.execDockerComposeSh(DockerComposeFiles.localCa, "ca.org1.debugger.com", "/etc/hyperledger/fabric/scripts/getWallets.sh", [], false);
+            const result: string = await ShellCommand.execDockerComposeSh(DockerComposeFiles.localCa, Settings.singleOrgSettings.caDomain, "/etc/hyperledger/fabric/scripts/getWallets.sh", [], false);
             if(result){
                 return result.split("\n").filter(user=> user && user!=="/" && user.indexOf("/")>-1).map(user=>user.replace("/", ""));
             }

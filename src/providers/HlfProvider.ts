@@ -5,9 +5,16 @@ import { Logger } from '../utilities/Logger';
 import { setTimeout } from "timers/promises";
 import { Prerequisites } from '../utilities/Prerequisites';
 import { TelemetryLogger } from '../utilities/TelemetryLogger';
+import * as fs from 'fs';
+import * as path from 'path';
+import {  Contract, ContractEvent, DefaultCheckpointers, Gateway, GatewayOptions, Wallets } from 'fabric-network';
 
 export class HlfProvider {
     public static islocalNetworkStarted: boolean = false;
+    private static contracts: Map<string, Contract> = new Map();
+    private static listener = async (event: ContractEvent) => {
+        Logger.instance().log(LogType.info, `Chaincode Event: Name: ${event.eventName}, Payload: ${event.payload.toString()}`);
+    };
 
     public static async createNetwork(): Promise<boolean>{
         const logger: Logger = Logger.instance();
@@ -36,7 +43,7 @@ export class HlfProvider {
                     progress.report({ increment: 10 });
 
                     //Create the required certificates
-                    await ShellCommand.execDockerComposeSh(DockerComposeFiles.localCa, "ca.org1.debugger.com", "/etc/hyperledger/fabric/scripts/registerEnrollOneOrg.sh");
+                    await ShellCommand.execDockerComposeSh(DockerComposeFiles.localCa, Settings.singleOrgSettings.caDomain, "/etc/hyperledger/fabric/scripts/registerEnrollOneOrg.sh");
                     progress.report({ increment: 20 });
 
                     //Create the rest of the nodes
@@ -208,4 +215,70 @@ export class HlfProvider {
         
         return shouldRestart;
 	}
+
+    public static async startChaincodeListener(): Promise<void>{
+        const logger: Logger = Logger.instance();
+        try{
+            let contract: Contract;
+            if(!HlfProvider.contracts.has(Settings.defaultChaincodeId)){
+                //Create wallet from the admin user's certificate and key
+                const mspPath = path.join(Settings.dockerDir, '..', '..', 'local', 'organizations', 'peerOrganizations',
+                Settings.singleOrgSettings.domain, 'users', Settings.singleOrgSettings.adminUser, 'msp');
+                const certPath = path.join(mspPath, 'signcerts', 'cert.pem');
+                const keyPath = path.join(mspPath, 'keystore');
+                let privatekey = '';
+                const files = fs.readdirSync(keyPath);
+                files.forEach(function (file) {
+                    privatekey = fs.readFileSync(path.join(keyPath, file), 'utf8');
+                });
+
+                const certificate = fs.readFileSync(certPath, 'utf8');
+                if(!certificate || !privatekey){
+                    logger.log(LogType.warning, "Certificate or private key not found for admin user. Skipping Event listener setup. Events won't be streamed to the output.");
+                    return;
+                } 
+                
+                const x509Identity = {
+                    credentials: {
+                        certificate: certificate,
+                        privateKey: privatekey,
+                    },
+                    mspId: Settings.singleOrgSettings.msp,
+                    type: 'X.509',
+                };
+                const wallet = await Wallets.newInMemoryWallet();
+                await wallet.put(Settings.singleOrgSettings.adminUser, x509Identity);
+
+                const ccpPath = path.join(Settings.dockerDir, '..', '..', 'sampleconfig', 'ccp', Settings.singleOrgSettings.ccpFileName);
+                const fileExists = fs.existsSync(ccpPath);
+                if (!fileExists) {
+                    logger.log(LogType.warning, "CCP profile not found. Skipping Event listener setup. Events won't be streamed to the output.");
+                    return;
+                }
+                const contents = fs.readFileSync(ccpPath, 'utf8');
+                const ccp = JSON.parse(contents);
+                
+                const gateway = new Gateway();
+                await gateway.connect(ccp, {
+                    wallet,
+                    identity: Settings.singleOrgSettings.adminUser,
+                    discovery: { enabled: false, asLocalhost: true } // using asLocalhost as this gateway is using a fabric network deployed locally
+                });
+                const network = await gateway.getNetwork(Settings.defaultChannel);
+                contract = network.getContract(Settings.defaultChaincodeId);
+                HlfProvider.contracts.set(Settings.defaultChaincodeId, contract);
+            } else {
+                contract = HlfProvider.contracts.get(Settings.defaultChaincodeId);
+            }
+        
+            //Cleanup any existing listener
+            contract.removeContractListener(HlfProvider.listener);
+            //Add a new event listener
+            const checkpointer = await DefaultCheckpointers.file(path.join(Settings.dockerDir, '..', '..', 'local', 'checkpointer'));
+			await contract.addContractListener(HlfProvider.listener, {checkpointer: checkpointer});
+
+        } catch(error){
+            logger.log(LogType.warning, `Skipping Event listener setup. Events won't be streamed to the output. ${error}`);
+        }
+    }
 }
