@@ -42,7 +42,10 @@ export class Settings {
     adminUser: "Org1Admin",
     name: "Org1",
     msp: "Org1MSP",
-    ccpFileName: "org1.json"
+    ccpFileName: "org1.json",
+    peerDomain: "peer0.org1.debugger.com",
+    ordererDomain: "orderer.debugger.com",
+    couchDbUrl: "http://localhost:5984/_utils"
   };
 
   static set defaultChaincodeId(chaincodeName: string){

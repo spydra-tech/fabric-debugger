@@ -5,7 +5,7 @@ export class WebsiteView {
 
     public static showMessage(): void {
         setTimeout(() => {
-            vscode.window.showInformationMessage("Checkout Spydra's production grade fully managed blockchain platform and no-code features for Hyperledger Fabric.",
+            vscode.window.showInformationMessage("Limited time offer!! Get $400 worth of credits FREE. Checkout Spydra's fully managed platform and no-code features for Hyperledger Fabric.",
             "Try Spydra Platform", "Contact Spydra").then(selection => {
                 if(selection === 'Contact Spydra') {
                     vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(Links.contactUs));

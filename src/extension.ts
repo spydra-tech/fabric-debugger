@@ -33,6 +33,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 	context.subscriptions.push(vscode.commands.registerCommand('hlf.localnetwork.stop', () => HlfProvider.stopNetwork()));
 	context.subscriptions.push(vscode.commands.registerCommand('hlf.localnetwork.restart', () => HlfProvider.restartNetwork()));
 	context.subscriptions.push(vscode.commands.registerCommand('hlf.localnetwork.remove', () => HlfProvider.removeNetwork()));
+	context.subscriptions.push(vscode.commands.registerCommand('hlf.localnetwork.openCouchDb', () => HlfProvider.openCouchDb()));
 	context.subscriptions.push(vscode.commands.registerCommand('hlf.localnetwork.refresh', () => networkTreeProvider.refresh()));
 	context.subscriptions.push(vscode.window.registerTreeDataProvider('hlfNetworks', networkTreeProvider));
 

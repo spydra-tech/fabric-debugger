@@ -45,18 +45,7 @@
   "activationEvents": [
     "onDebugResolve:hlf-go",
     "onDebugResolve:hlf-node",
-    "onLanguage:jsonc",
-    "onView:hlfNetworks",
-    "onView:hlfWallets",
-    "onCommand:hlf.fabric.request",
-    "onCommand:hlf.localnetwork.start",
-    "onCommand:hlf.localnetwork.stop",
-    "onCommand:hlf.localnetwork.restart",
-    "onCommand:hlf.localnetwork.remove",
-    "onCommand:hlf.localnetwork.refresh",
-    "onCommand:hlf.identity.create",
-    "onCommand:hlf.identity.remove",
-    "onCommand:hlf.identity.refresh"
+    "onLanguage:jsonc"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -89,6 +78,12 @@
         "title": "Remove Network",
         "category": "Hlf Debugger",
         "icon": "$(desktop-download)"
+      },
+      {
+        "command": "hlf.localnetwork.openCouchDb",
+        "title": "Open CouchDB",
+        "category": "Hlf Debugger",
+        "icon": "$(database)"
       },
       {
         "command": "hlf.localnetwork.refresh",
@@ -185,6 +180,11 @@
         {
           "command": "hlf.localnetwork.remove",
           "when": "view == hlfNetworks && viewItem == network",
+          "group": "inline"
+        },
+        {
+          "command": "hlf.localnetwork.openCouchDb",
+          "when": "view == hlfNetworks && viewItem == peer",
           "group": "inline"
         },
         {

@@ -281,4 +281,12 @@ export class HlfProvider {
             logger.log(LogType.warning, `Skipping Event listener setup. Events won't be streamed to the output. ${error}`);
         }
     }
+
+    public static async openCouchDb(): Promise<void>{
+        vscode.window.showInformationMessage("Credentials for login to CouchDB.\nUsername: admin\nPassword: adminpw",
+        {modal: true, detail:`Navigate to the database 'default_${Settings.defaultChaincodeId}' to view the documents.`})
+        .then(() => {
+            vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(Settings.singleOrgSettings.couchDbUrl));
+        });
+    }
 }
