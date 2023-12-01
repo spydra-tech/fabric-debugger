@@ -27,7 +27,7 @@ export class HlfResponseWebview {
             'fabricResponse',
             'Fabric Response',
             vscode.ViewColumn.Two,
-            {}
+            {enableFindWidget: true, enableScripts: true}
           );
     }
 
@@ -47,6 +47,7 @@ export class HlfResponseWebview {
             if(message.indexOf("Usage:")>-1){
                 this._result = this._result.substring(0, message.indexOf("Usage:")-1);
             }
+            this._result = `<code>${this._result}</code>`;
         }
         else{
             this._message = "Chaincode invoke successful.";
@@ -54,8 +55,7 @@ export class HlfResponseWebview {
             this._headlineColor = "MediumSeaGreen";
             if(this.isJson(message)){
                 const json = JSON.parse(message);
-                const prettyHtml = require('json-pretty-html').default;
-                this._result = `${prettyHtml(json, json.dimensions)}`;
+                this._result = `<pre><code>${JSON.stringify(json, null, 2)}</code></pre>`;
             }
             else{
                 this._result = `<code>${message}</code>`;
@@ -82,43 +82,8 @@ export class HlfResponseWebview {
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>Response</title>
-                <style>
-                    body {
-                        font-family: Menlo, Monaco, "Courier New", monospace;
-                        font-weight: normal;
-                        font-size: 14px;
-                        line-height: 16px;
-                        letter-spacing: 0;
-                        text-align: left;
-                        border-top: 1px solid #121516;
-                        padding-top: 10px;
-                        padding-bottom: 10px;
-                        margin: 0;
-                    }
-                    .json-pretty {
-                        padding-left: 30px;
-                        padding-right: 30px;
-                    }
-                    .json-selected {
-                        background-color: rgba(139, 191, 228, 0.19999999999999996);
-                    }
-                    
-                    .json-string {
-                        color: #ff6600;
-                    }
-                    
-                    .json-key {
-                        color: #3399ff;
-                    }
-                    
-                    .json-boolean {
-                        color: #00bfff;
-                    }
-                    
-                    .json-number {
-                        color: #00ff80;
-                    }
-                </style>
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
             </head>
             <body>
                 <p>
@@ -127,6 +92,8 @@ export class HlfResponseWebview {
                     <span><strong>Time:</strong>${duration} ms</span>
                 </p>
                 <span><strong>Result:</strong><br>${this._result}</span>
+
+                <script>hljs.highlightAll();</script>
             </body>
             </html>`;
     }
