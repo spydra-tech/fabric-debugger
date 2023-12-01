@@ -66,16 +66,17 @@ export class HlfRequestCommandProvider {
         const elapsedTime = TelemetryLogger.instance().parseHrtimeToMs(process.hrtime(startTime));
 
         if(result.indexOf("error building chaincode: error building image: failed to get chaincode package for external build:") > -1
-        || result.indexOf("connect: connection refused") > -1){
+        || result.indexOf("connect: connection refused") > -1
+        || result.indexOf("make sure the chaincode asset has been successfully defined on channel") > -1){
             Logger.instance().showMessage(LogType.error, "Start Debugging(F5) before submitting a transaction to Fabric");
-            result = "Error: cannot debug Chaincode. response: status:500 message: \"Start Debugging(F5) before submitting a transaction to Fabric\"";
+            result = "Error: cannot debug Chaincode. response: status:500 message: \"Start Debugging(F5) before submitting a transaction to Fabric. If you have already started debugging, wait for the debug symbols to appear at the top of the window.\"";
         }
         if(result.indexOf("service \"debug-cli\" is not running container") > -1){
             Logger.instance().showMessage(LogType.error, "Start the Network or Start Debugging(F5) before submitting a transaction to Fabric");
-            result = "Error: cannot connect to local Fabric environment. response: status:500 message: \"Start the Network or Start Debugging(F5) before submitting a transaction to Fabric\"";
+            result = "Error: cannot connect to local Fabric environment. response: status:500 message: \"Start the Network or Start Debugging(F5) before submitting a transaction to Fabric. If you have already started debugging, wait for the debug symbols to appear at the top of the window.\"";
         }
         else if(result.startsWith("Error: chaincode argument error: invalid character")){
-            Logger.instance().showMessage(LogType.error, "Syntax error in query/invoke request");
+            Logger.instance().showMessage(LogType.error, `Syntax error in query/invoke request. Chaincode arguments supplied: ${payloadLines}.`);
         }
 
         //Render the result
