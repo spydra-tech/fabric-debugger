@@ -12,13 +12,13 @@ export class Logger {
     }
 
     private constructor() {
-        this._outputChannel = window.createOutputChannel('Hlf Debugger');
-        this._outputChannel.show();
+        this._outputChannel = window.createOutputChannel('Hlf Debugger', "log");
     }
 
     //Log message to output window
     public log(type: constants.LogType, message: string){
-        this._outputChannel.appendLine(`[${(new Date().toLocaleTimeString())} - ${type}] ${message}`);
+        this._outputChannel.show();
+        this._outputChannel.appendLine(`${(new Date().toISOString())} [${type}] ${message}`);
     }
 
     //Show popup message and log the error

@@ -35,7 +35,11 @@ export class ShellCommand {
             messages.forEach((message: string)=> {
                     if(message) {
                         if(printLogs){
-                            logger.log(constants.LogType.info, message);
+                            if(message.toLowerCase().indexOf("error") === -1){
+                                logger.log(constants.LogType.info, message);
+                            } else {
+                                logger.log(constants.LogType.error, message);
+                            }
                         }
                         ouput = `${ouput}${message}\n`;
                     }
@@ -50,7 +54,11 @@ export class ShellCommand {
                         if(printLogs
                             && message.toLowerCase().indexOf("found orphan containers")===-1 /*suppress orphan container messages as we are using two docker-compose files*/
                             ){
-                                logger.log(constants.LogType.info, message);
+                                if(message.toLowerCase().indexOf("error") === -1){
+                                    logger.log(constants.LogType.info, message);
+                                } else {
+                                    logger.log(constants.LogType.error, message);
+                                }
                         }
                         ouput = `${ouput}${message}\n`;
                     }
