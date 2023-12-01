@@ -99,7 +99,7 @@ export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider
 		//Create a project id using hash of workspace folder. Md5 is used here as this is only to generate a unique if and not for security purposes.
 		const projectId = createHash('md5').update(folder.uri.toString()).digest("hex");
 		TelemetryLogger.instance().sendTelemetryEvent('ResolveDebug', {'debugType': debugConfiguration.type,
-		'isCaas': debugConfiguration.isCaas, 'language': language, 'projectId': projectId});
+		'isCaas': debugConfiguration.isCaas.toString(), 'language': language, 'projectId': projectId});
 
 		//Simply changing the Debugger type will result in an error as the debugger type has already been determined by this time
 		//We need to cancel the existing debugging session and start a new one with the modified configuration.
