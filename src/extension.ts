@@ -8,7 +8,6 @@ import { HlfDebugConfigProvider } from './providers/HlfDebugConfigProvider';
 import { NetworkTreeProvider } from './providers/NetworkTreeProvider';
 import { WalletTreeProvider } from './providers/WalletTreeProvider';
 import { Settings } from './utilities/Constants';
-import { Logger } from './utilities/Logger';
 import { WalletIdentityProvider } from './providers/WalletIdentityProvider';
 import { WalletItem } from './views/trees/WalletItem';
 import { TelemetryLogger } from './utilities/TelemetryLogger';
@@ -20,11 +19,9 @@ import { Commands } from './utilities/Commands';
 // The extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
 	var startTime = process.hrtime();
-	const logger: Logger = Logger.instance();
 	const telemetryLogger = TelemetryLogger.instance();
 
 	Settings.dockerDir = context.asAbsolutePath(`fabric/docker/${Settings.singleOrgProj}`);
-	HlfProvider.setChaincodeName();
 
 	//Register the Debug configuration providers for Golang and Node
 	context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('hlf-go', new HlfDebugConfigProvider()));
@@ -36,6 +33,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 	context.subscriptions.push(vscode.commands.registerCommand('hlf.localnetwork.stop', () => HlfProvider.stopNetwork()));
 	context.subscriptions.push(vscode.commands.registerCommand('hlf.localnetwork.restart', () => HlfProvider.restartNetwork()));
 	context.subscriptions.push(vscode.commands.registerCommand('hlf.localnetwork.remove', () => HlfProvider.removeNetwork()));
+	context.subscriptions.push(vscode.commands.registerCommand('hlf.localnetwork.openCouchDb', () => HlfProvider.openCouchDb()));
 	context.subscriptions.push(vscode.commands.registerCommand('hlf.localnetwork.refresh', () => networkTreeProvider.refresh()));
 	context.subscriptions.push(vscode.window.registerTreeDataProvider('hlfNetworks', networkTreeProvider));
 

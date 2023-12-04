@@ -4,20 +4,27 @@ import {DebuggerType, ChaincodeLang, Settings, LogType} from '../utilities/Const
 import { TelemetryLogger } from '../utilities/TelemetryLogger';
 import { HlfProvider } from './HlfProvider';
 import * as fs from 'fs/promises';
+import { WebsiteView } from '../views/WebsiteView';
+import {createHash} from 'crypto';
 
 export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider {
 
     public async resolveDebugConfiguration(folder: vscode.WorkspaceFolder | undefined, debugConfiguration: vscode.DebugConfiguration): Promise<vscode.DebugConfiguration> {
-		TelemetryLogger.instance().sendTelemetryEvent('ResolveDebug', {'debugType': debugConfiguration.type, 'isCaas': debugConfiguration.isCaas});
 
+		let language = "";
 		if(!HlfProvider.islocalNetworkStarted || (await HlfProvider.shouldRestart(debugConfiguration))){
 			//Launch Fabric network if its not up yet.
 			Settings.isCaas = debugConfiguration.isCaas;
+			HlfProvider.setChaincodeName(debugConfiguration.chaincodeName);
 			HlfProvider.islocalNetworkStarted = await HlfProvider.createNetwork();
 			//If we failed to start the network, then return undefined to cancel the debugging session
 			if(!HlfProvider.islocalNetworkStarted){
 				return undefined;
 			}
+
+			//Start event listener to detect and log all chaincode events.
+			await HlfProvider.startChaincodeListener();
+			WebsiteView.showMessage();
 		}
 
 		if (!debugConfiguration.args) {
@@ -27,6 +34,7 @@ export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider
 		//Depending on the language used to develop the chaincode, choose the approriate debugger.
 		switch(debugConfiguration.type){
 			case DebuggerType.hlfGo: {
+				language = "go";
 				debugConfiguration.type=ChaincodeLang.hlfGo;
 				if (!debugConfiguration.program) {
 					debugConfiguration.program = '${fileDirname}';
@@ -34,6 +42,7 @@ export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider
 				break;
 			}
 			case DebuggerType.hlfNode: {
+				language = "javascript";
 				debugConfiguration.type=ChaincodeLang.hlfNode;
 				if(process.platform === "win32"){
 					debugConfiguration.program = path.join(folder.uri.fsPath, 'node_modules', 'fabric-shim', 'cli');
@@ -51,6 +60,7 @@ export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider
 
 				const files: string[] = await fs.readdir(folder.uri.fsPath);
 				if (files.includes('tsconfig.json')) {
+					language = "typescript";
 					debugConfiguration.preLaunchTask = 'tsc: build - tsconfig.json';
 					debugConfiguration.outFiles = [
 						'${workspaceFolder}/dist/**/*.js'
@@ -82,6 +92,11 @@ export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider
 			//Add peer address to the arguments
 			debugConfiguration.args.push('--peer.address', Settings.peerAddress);
 		}
+
+		//Create a project id using hash of workspace folder. Md5 is used here as this is only to generate a unique if and not for security purposes.
+		const projectId = createHash('md5').update(folder.uri.toString()).digest("hex");
+		TelemetryLogger.instance().sendTelemetryEvent('ResolveDebug', {'debugType': debugConfiguration.type,
+		'isCaas': debugConfiguration.isCaas.toString(), 'language': language, 'projectId': projectId});
 
 		//Simply changing the Debugger type will result in an error as the debugger type has already been determined by this time
 		//We need to cancel the existing debugging session and start a new one with the modified configuration.

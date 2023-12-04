@@ -1,0 +1,67 @@
+{
+  "name": "debug-network",
+  "x-type": "hlfv1",
+  "description": "The local debug network",
+  "version": "1.0",
+  "client": {
+    "organization": "Org1MSP",
+    "connection": {
+      "timeout": {
+        "peer": {
+          "endorser": "600"
+        }
+      }
+    }
+  },
+  "channels": {
+    "default": {
+      "orderers": [
+        "orderer.debugger.com"
+      ],
+      "peers": {
+        "peer0.org1.debugger.com": {
+          "endorsingPeer": true,
+          "chaincodeQuery": true,
+          "ledgerQuery": true,
+          "eventSource": true
+        }
+      }
+    }
+  },
+  "organizations": {
+    "Org1MSP": {
+      "mspid": "Org1MSP",
+      "peers": [
+        "peer0.org1.debugger.com"
+      ],
+      "certificateAuthorities": [
+        "ca-org1"
+      ]
+    }
+  },
+  "orderers": {
+    "orderer.debugger.com": {
+      "url": "grpc://127.0.0.1:5050",
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer.debugger.com"
+      }
+    }
+  },
+  "peers": {
+    "peer0.org1.debugger.com": {
+      "url": "grpc://127.0.0.1:5051",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.org1.debugger.com",
+        "request-timeout": 120001
+      }
+    }
+  },
+  "certificateAuthorities": {
+    "ca-org1": {
+      "url": "http://localhost:5054",
+      "httpOptions": {
+        "verify": false
+      }
+    }
+  }
+}

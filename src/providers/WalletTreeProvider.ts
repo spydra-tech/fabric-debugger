@@ -5,6 +5,7 @@ import { WalletItem } from '../views/trees/WalletItem';
 import { HlfTreeItem } from '../views/trees/HlfTreeItem';
 import { HlfProvider } from './HlfProvider';
 import { WalletIdentityProvider } from './WalletIdentityProvider';
+import { Settings } from '../utilities/Constants';
 
 export class WalletTreeProvider implements vscode.TreeDataProvider<HlfTreeItem> {
 
@@ -24,13 +25,13 @@ export class WalletTreeProvider implements vscode.TreeDataProvider<HlfTreeItem> 
         if(HlfProvider.islocalNetworkStarted){
             if (element) {
                 if (element instanceof NetworkItem) {
-                    tree.push(new OrganizationItem("Org1", vscode.TreeItemCollapsibleState.Expanded));
+                    tree.push(new OrganizationItem(Settings.singleOrgSettings.name, vscode.TreeItemCollapsibleState.Expanded));
                 }
                 if (element instanceof OrganizationItem) {
                     const wallets = await WalletIdentityProvider.getwallets();
     
                     wallets.forEach(user => {
-                        if(user.toLowerCase() === "org1admin"){
+                        if(user.toLowerCase() === Settings.singleOrgSettings.adminUser.toLowerCase()){
                             //Do not allow the default org admin user to be removed.
                             //For this, set the context to some value other than 'wallet'
                             tree.push(new WalletItem(user, vscode.TreeItemCollapsibleState.None, user));

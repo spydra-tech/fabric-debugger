@@ -1,11 +1,11 @@
 #!/bin/sh
 
-function createOrg1() {
+createOrg1() {
   mkdir -p organizations/peerOrganizations/org1.debugger.com/
 
   export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/org1.debugger.com/
 
-  fabric-ca-client enroll -u https://admin:adminpw@localhost:5054 --caname ca-org1 --tls.certfiles "${PWD}/organizations/fabric-ca/org1/ca-cert.pem"
+  fabric-ca-client enroll -u http://admin:adminpw@localhost:5054 --caname ca-org1
   { set +x; } 2>/dev/null
 
   echo 'NodeOUs:
@@ -37,21 +37,21 @@ function createOrg1() {
   mkdir -p "${PWD}/organizations/peerOrganizations/org1.debugger.com/ca"
   cp "${PWD}/organizations/fabric-ca/org1/ca-cert.pem" "${PWD}/organizations/peerOrganizations/org1.debugger.com/ca/ca.org1.debugger.com-cert.pem"
  
-  fabric-ca-client register --caname ca-org1 --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/org1/ca-cert.pem"
+  fabric-ca-client register --caname ca-org1 --id.name peer0 --id.secret peer0pw --id.type peer
   { set +x; } 2>/dev/null
 
-  fabric-ca-client register --caname ca-org1 --id.name user1 --id.secret user1pw --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/org1/ca-cert.pem"
+  fabric-ca-client register --caname ca-org1 --id.name user1 --id.secret user1pw --id.type client
   { set +x; } 2>/dev/null
 
-  fabric-ca-client register --caname ca-org1 --id.name org1admin --id.secret org1adminpw --id.type admin --tls.certfiles "${PWD}/organizations/fabric-ca/org1/ca-cert.pem"
+  fabric-ca-client register --caname ca-org1 --id.name org1admin --id.secret org1adminpw --id.type admin
   { set +x; } 2>/dev/null
 
-  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:5054 --caname ca-org1 -M "${PWD}/organizations/peerOrganizations/org1.debugger.com/peers/peer0.org1.debugger.com/msp" --csr.hosts peer0.org1.debugger.com --tls.certfiles "${PWD}/organizations/fabric-ca/org1/ca-cert.pem"
+  fabric-ca-client enroll -u http://peer0:peer0pw@localhost:5054 --caname ca-org1 -M "${PWD}/organizations/peerOrganizations/org1.debugger.com/peers/peer0.org1.debugger.com/msp" --csr.hosts peer0.org1.debugger.com
   { set +x; } 2>/dev/null
 
   cp "${PWD}/organizations/peerOrganizations/org1.debugger.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/org1.debugger.com/peers/peer0.org1.debugger.com/msp/config.yaml"
 
-  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:5054 --caname ca-org1 -M "${PWD}/organizations/peerOrganizations/org1.debugger.com/peers/peer0.org1.debugger.com/tls" --enrollment.profile tls --csr.hosts peer0.org1.debugger.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/org1/ca-cert.pem"
+  fabric-ca-client enroll -u http://peer0:peer0pw@localhost:5054 --caname ca-org1 -M "${PWD}/organizations/peerOrganizations/org1.debugger.com/peers/peer0.org1.debugger.com/tls" --enrollment.profile tls --csr.hosts peer0.org1.debugger.com --csr.hosts localhost
   { set +x; } 2>/dev/null
 
   # Copy the tls CA cert, server cert, server keystore to well known file names in the peer's tls directory that are referenced by peer startup config
@@ -59,23 +59,23 @@ function createOrg1() {
   cp "${PWD}/organizations/peerOrganizations/org1.debugger.com/peers/peer0.org1.debugger.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/org1.debugger.com/peers/peer0.org1.debugger.com/tls/server.crt"
   cp "${PWD}/organizations/peerOrganizations/org1.debugger.com/peers/peer0.org1.debugger.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/org1.debugger.com/peers/peer0.org1.debugger.com/tls/server.key"
 
-  fabric-ca-client enroll -u https://user1:user1pw@localhost:5054 --caname ca-org1 -M "${PWD}/organizations/peerOrganizations/org1.debugger.com/users/User1/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/org1/ca-cert.pem"
+  fabric-ca-client enroll -u http://user1:user1pw@localhost:5054 --caname ca-org1 -M "${PWD}/organizations/peerOrganizations/org1.debugger.com/users/User1/msp"
   { set +x; } 2>/dev/null
 
   cp "${PWD}/organizations/peerOrganizations/org1.debugger.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/org1.debugger.com/users/User1/msp/config.yaml"
 
-  fabric-ca-client enroll -u https://org1admin:org1adminpw@localhost:5054 --caname ca-org1 -M "${PWD}/organizations/peerOrganizations/org1.debugger.com/users/Org1Admin/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/org1/ca-cert.pem"
+  fabric-ca-client enroll -u http://org1admin:org1adminpw@localhost:5054 --caname ca-org1 -M "${PWD}/organizations/peerOrganizations/org1.debugger.com/users/Org1Admin/msp"
   { set +x; } 2>/dev/null
 
   cp "${PWD}/organizations/peerOrganizations/org1.debugger.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/org1.debugger.com/users/Org1Admin/msp/config.yaml"
 }
 
-function createOrg2() {
+createOrg2() {
   mkdir -p organizations/peerOrganizations/org2.debugger.com/
 
   export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/org2.debugger.com/
 
-  fabric-ca-client enroll -u https://admin:adminpw@localhost:5064 --caname ca-org2 --tls.certfiles "${PWD}/organizations/fabric-ca/org2/ca-cert.pem"
+  fabric-ca-client enroll -u http://admin:adminpw@localhost:5064 --caname ca-org2
   { set +x; } 2>/dev/null
 
   echo 'NodeOUs:
@@ -107,21 +107,21 @@ function createOrg2() {
   mkdir -p "${PWD}/organizations/peerOrganizations/org2.debugger.com/ca"
   cp "${PWD}/organizations/fabric-ca/org2/ca-cert.pem" "${PWD}/organizations/peerOrganizations/org2.debugger.com/ca/ca.org2.debugger.com-cert.pem"
 
-  fabric-ca-client register --caname ca-org2 --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/org2/ca-cert.pem"
+  fabric-ca-client register --caname ca-org2 --id.name peer0 --id.secret peer0pw --id.type peer
   { set +x; } 2>/dev/null
 
-  fabric-ca-client register --caname ca-org2 --id.name user1 --id.secret user1pw --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/org2/ca-cert.pem"
+  fabric-ca-client register --caname ca-org2 --id.name user1 --id.secret user1pw --id.type client
   { set +x; } 2>/dev/null
 
-  fabric-ca-client register --caname ca-org2 --id.name org2admin --id.secret org2adminpw --id.type admin --tls.certfiles "${PWD}/organizations/fabric-ca/org2/ca-cert.pem"
+  fabric-ca-client register --caname ca-org2 --id.name org2admin --id.secret org2adminpw --id.type admin
   { set +x; } 2>/dev/null
 
-  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:5064 --caname ca-org2 -M "${PWD}/organizations/peerOrganizations/org2.debugger.com/peers/peer0.org2.debugger.com/msp" --csr.hosts peer0.org2.debugger.com --tls.certfiles "${PWD}/organizations/fabric-ca/org2/ca-cert.pem"
+  fabric-ca-client enroll -u http://peer0:peer0pw@localhost:5064 --caname ca-org2 -M "${PWD}/organizations/peerOrganizations/org2.debugger.com/peers/peer0.org2.debugger.com/msp" --csr.hosts peer0.org2.debugger.com
   { set +x; } 2>/dev/null
 
   cp "${PWD}/organizations/peerOrganizations/org2.debugger.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/org2.debugger.com/peers/peer0.org2.debugger.com/msp/config.yaml"
 
-  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:5064 --caname ca-org2 -M "${PWD}/organizations/peerOrganizations/org2.debugger.com/peers/peer0.org2.debugger.com/tls" --enrollment.profile tls --csr.hosts peer0.org2.debugger.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/org2/ca-cert.pem"
+  fabric-ca-client enroll -u http://peer0:peer0pw@localhost:5064 --caname ca-org2 -M "${PWD}/organizations/peerOrganizations/org2.debugger.com/peers/peer0.org2.debugger.com/tls" --enrollment.profile tls --csr.hosts peer0.org2.debugger.com --csr.hosts localhost
   { set +x; } 2>/dev/null
 
   # Copy the tls CA cert, server cert, server keystore to well known file names in the peer's tls directory that are referenced by peer startup config
@@ -129,12 +129,12 @@ function createOrg2() {
   cp "${PWD}/organizations/peerOrganizations/org2.debugger.com/peers/peer0.org2.debugger.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/org2.debugger.com/peers/peer0.org2.debugger.com/tls/server.crt"
   cp "${PWD}/organizations/peerOrganizations/org2.debugger.com/peers/peer0.org2.debugger.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/org2.debugger.com/peers/peer0.org2.debugger.com/tls/server.key"
 
-  fabric-ca-client enroll -u https://user1:user1pw@localhost:5064 --caname ca-org2 -M "${PWD}/organizations/peerOrganizations/org2.debugger.com/users/User1@org2.debugger.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/org2/ca-cert.pem"
+  fabric-ca-client enroll -u http://user1:user1pw@localhost:5064 --caname ca-org2 -M "${PWD}/organizations/peerOrganizations/org2.debugger.com/users/User1@org2.debugger.com/msp"
   { set +x; } 2>/dev/null
 
   cp "${PWD}/organizations/peerOrganizations/org2.debugger.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/org2.debugger.com/users/User1@org2.debugger.com/msp/config.yaml"
 
-  fabric-ca-client enroll -u https://org2admin:org2adminpw@localhost:5064 --caname ca-org2 -M "${PWD}/organizations/peerOrganizations/org2.debugger.com/users/Admin@org2.debugger.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/org2/ca-cert.pem"
+  fabric-ca-client enroll -u http://org2admin:org2adminpw@localhost:5064 --caname ca-org2 -M "${PWD}/organizations/peerOrganizations/org2.debugger.com/users/Admin@org2.debugger.com/msp"
   { set +x; } 2>/dev/null
 
   cp "${PWD}/organizations/peerOrganizations/org2.debugger.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/org2.debugger.com/users/Admin@org2.debugger.com/msp/config.yaml"

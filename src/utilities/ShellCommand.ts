@@ -51,7 +51,7 @@ export class ShellCommand {
                             && message.toLowerCase().indexOf("found orphan containers")===-1 /*suppress orphan container messages as we are using two docker-compose files*/
                             ){
                                 logger.log(constants.LogType.info, message);
-                        }
+                            }
                         ouput = `${ouput}${message}\n`;
                     }
                 }

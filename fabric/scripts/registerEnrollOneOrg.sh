@@ -8,14 +8,5 @@ else
     echo "Enrolling certificates for Org1"
     . ../scripts/registerEnroll.sh
 
-    while :
-        do
-        if [ ! -f "/etc/hyperledger/fabric-ca-server/tls-cert.pem" ]; then
-            sleep 1
-        else
-            break
-        fi
-        done
-
-    createOrg1 &> /dev/null
+    createOrg1 &> /dev/null 
 fi

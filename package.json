@@ -3,7 +3,7 @@
   "displayName": "Hyperledger Fabric Debugger",
   "description": "Extension for Visual Studio Code that makes it easy for developers to build and debug Chaincode right from within the IDE.",
   "author": "Spydra",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "publisher": "Spydra",
   "homepage": "https://www.spydra.app/?utm_source=vs_marketplace&utm_medium=fabric_debugger_plugin",
   "icon": "media/spydra-blue.png",
@@ -21,7 +21,7 @@
   },
   "license": "Apache-2.0",
   "engines": {
-    "vscode": "^1.40.0"
+    "vscode": "^1.80.0"
   },
   "categories": [
     "Debuggers",
@@ -45,18 +45,7 @@
   "activationEvents": [
     "onDebugResolve:hlf-go",
     "onDebugResolve:hlf-node",
-    "onLanguage:jsonc",
-    "onView:hlfNetworks",
-    "onView:hlfWallets",
-    "onCommand:hlf.fabric.request",
-    "onCommand:hlf.localnetwork.start",
-    "onCommand:hlf.localnetwork.stop",
-    "onCommand:hlf.localnetwork.restart",
-    "onCommand:hlf.localnetwork.remove",
-    "onCommand:hlf.localnetwork.refresh",
-    "onCommand:hlf.identity.create",
-    "onCommand:hlf.identity.remove",
-    "onCommand:hlf.identity.refresh"
+    "onLanguage:jsonc"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -89,6 +78,12 @@
         "title": "Remove Network",
         "category": "Hlf Debugger",
         "icon": "$(desktop-download)"
+      },
+      {
+        "command": "hlf.localnetwork.openCouchDb",
+        "title": "Open CouchDB",
+        "category": "Hlf Debugger",
+        "icon": "$(database)"
       },
       {
         "command": "hlf.localnetwork.refresh",
@@ -188,6 +183,11 @@
           "group": "inline"
         },
         {
+          "command": "hlf.localnetwork.openCouchDb",
+          "when": "view == hlfNetworks && viewItem == peer",
+          "group": "inline"
+        },
+        {
           "command": "hlf.identity.create",
           "when": "view == hlfWallets && viewItem == organization",
           "group": "inline"
@@ -237,6 +237,11 @@
                 "type": "boolean",
                 "description": "Whether the Chaincode is written to run as the newer Chaincode as an External Service model.",
                 "default": false
+              },
+              "chaincodeName": {
+                "type": "string",
+                "description": "The name of the chaincode which will be deployed on the network. If a name is not provided, it is automatically set as the current Vscode workspace name.",
+                "default": null
               },
               "mode": {
                 "enum": [
@@ -500,6 +505,11 @@
                 "description": "Whether the Chaincode is written to run as the newer Chaincode as an External Service model.",
                 "default": false
               },
+              "chaincodeName": {
+                "type": "string",
+                "description": "The name of the chaincode which will be deployed on the network. If a name is not provided, it is automatically set as the current Vscode workspace name.",
+                "default": null
+              },
               "cwd": {
                 "type": "string",
                 "description": "Absolute path to the working directory of the program being debugged.",
@@ -645,21 +655,17 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/glob": "^8.0.0",
-    "@types/mocha": "^10.0.0",
-    "@types/node": "20.x",
-    "@types/vscode": "^1.40.0",
-    "@typescript-eslint/eslint-plugin": "^6.10.0",
-    "@typescript-eslint/parser": "^5.54.1",
-    "@vscode/test-electron": "^2.2.3",
-    "eslint": "^8.35.0",
-    "glob": "^8.0.3",
-    "mocha": "^10.2.0",
-    "typescript": "^4.8.4"
+    "@types/node": "18.x",
+    "@types/vscode": "^1.80.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
+    "eslint": "^8.52.0",
+    "glob": "^10.3.10",
+    "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@vscode/extension-telemetry": "^0.6.2",
-    "json-pretty-html": "^1.1.6",
+    "@vscode/extension-telemetry": "^0.9.0",
+    "fabric-network": "^2.2.20",
     "json5": "^2.2.3"
   }
 }
