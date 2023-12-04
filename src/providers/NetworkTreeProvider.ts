@@ -41,7 +41,9 @@ export class NetworkTreeProvider implements vscode.TreeDataProvider<vscode.TreeI
             } else if (element instanceof NodeItem && element.label === "orderer") {
                 tree.push(new OrdererItem(Settings.singleOrgSettings.ordererDomain, vscode.TreeItemCollapsibleState.None));
             } else if (element instanceof NodeItem && element.label === "peer") {
-                tree.push(new PeerItem(Settings.singleOrgSettings.peerDomain, vscode.TreeItemCollapsibleState.None));
+                tree.push(new PeerItem(Settings.singleOrgSettings.peerDomain, vscode.TreeItemCollapsibleState.Expanded));
+            } else if (element instanceof PeerItem) {
+                tree.push(new vscode.TreeItem(Settings.defaultChaincodeId, vscode.TreeItemCollapsibleState.None));
             }
         }
         else{

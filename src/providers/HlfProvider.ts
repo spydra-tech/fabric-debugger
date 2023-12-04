@@ -13,7 +13,8 @@ export class HlfProvider {
     public static islocalNetworkStarted: boolean = false;
     private static contracts: Map<string, Contract> = new Map();
     private static listener = async (event: ContractEvent) => {
-        Logger.instance().log(LogType.info, `Chaincode Event: Name: ${event.eventName}, Payload: ${event.payload.toString()}`);
+        const transaction = event.getTransactionEvent();
+        Logger.instance().log(LogType.info, `Chaincode Event: Name: ${event.eventName}, Block No: ${transaction.getBlockEvent().blockNumber}, Transaction Id: ${transaction.transactionId}, Payload: ${event.payload.toString()}`);
     };
 
     public static async createNetwork(): Promise<boolean>{
@@ -41,6 +42,9 @@ export class HlfProvider {
                     //Create the CA node first
                     await ShellCommand.runDockerCompose(DockerComposeFiles.localCa, ["up", "--detach"]);
                     progress.report({ increment: 10 });
+
+                    //Wait for some time for the CA node to be fully functional
+                    await setTimeout(1000);
 
                     //Create the required certificates
                     await ShellCommand.execDockerComposeSh(DockerComposeFiles.localCa, Settings.singleOrgSettings.caDomain, "/etc/hyperledger/fabric/scripts/registerEnrollOneOrg.sh");

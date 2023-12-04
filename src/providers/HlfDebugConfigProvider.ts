@@ -24,10 +24,7 @@ export class HlfDebugConfigProvider implements vscode.DebugConfigurationProvider
 
 			//Start event listener to detect and log all chaincode events.
 			await HlfProvider.startChaincodeListener();
-
-			if(Settings.spdrLinkMessageShown === 0){
-				WebsiteView.showMessage();
-			}
+			WebsiteView.showMessage();
 		}
 
 		if (!debugConfiguration.args) {

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-function createOrg1() {
+createOrg1() {
   mkdir -p organizations/peerOrganizations/org1.debugger.com/
 
   export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/org1.debugger.com/
@@ -70,7 +70,7 @@ function createOrg1() {
   cp "${PWD}/organizations/peerOrganizations/org1.debugger.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/org1.debugger.com/users/Org1Admin/msp/config.yaml"
 }
 
-function createOrg2() {
+createOrg2() {
   mkdir -p organizations/peerOrganizations/org2.debugger.com/
 
   export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/org2.debugger.com/

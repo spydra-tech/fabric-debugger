@@ -3,7 +3,7 @@
   "displayName": "Hyperledger Fabric Debugger",
   "description": "Extension for Visual Studio Code that makes it easy for developers to build and debug Chaincode right from within the IDE.",
   "author": "Spydra",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "publisher": "Spydra",
   "homepage": "https://www.spydra.app/?utm_source=vs_marketplace&utm_medium=fabric_debugger_plugin",
   "icon": "media/spydra-blue.png",
@@ -21,7 +21,7 @@
   },
   "license": "Apache-2.0",
   "engines": {
-    "vscode": "^1.40.0"
+    "vscode": "^1.80.0"
   },
   "categories": [
     "Debuggers",
@@ -656,11 +656,11 @@
   },
   "devDependencies": {
     "@types/node": "18.x",
-    "@types/vscode": "^1.84.0",
-    "@typescript-eslint/eslint-plugin": "^6.10.0",
-    "@typescript-eslint/parser": "^6.10.0",
+    "@types/vscode": "^1.80.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
     "eslint": "^8.52.0",
-    "glob": "^10.2.0",
+    "glob": "^10.3.10",
     "typescript": "^4.9.5"
   },
   "dependencies": {

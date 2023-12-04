@@ -16,15 +16,6 @@ export enum LogType {
 
 export class Settings {
   private static _defaultChaincodeId: string = "asset";
-  static readonly debugEnv = {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    "CORE_CHAINCODE_ID_NAME" : "asset:v1", "CORE_CHAINCODE_LOGLEVEL" : "debug", "CORE_PEER_TLS_ENABLED" : "false"
-  };
-
-  static readonly debugCaasEnv = {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    "CHAINCODE_ID" : "asset:v1", "CHAINCODE_SERVER_ADDRESS" : "localhost:5999"
-  };
 
   //Currently peer address is hardcoded to the below and will always be launched here.
   static readonly peerAddress: string = "localhost:5052";
@@ -55,6 +46,16 @@ export class Settings {
   static get defaultChaincodeId(){
       return Settings._defaultChaincodeId;
   }
+
+  static readonly debugEnv = {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    "CORE_CHAINCODE_ID_NAME" : "asset:v1", "CORE_CHAINCODE_LOGLEVEL" : "debug", "CORE_PEER_TLS_ENABLED" : "false", "CORE_PEER_LOCALMSPID" : Settings.singleOrgSettings.msp
+  };
+
+  static readonly debugCaasEnv = {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    "CHAINCODE_ID" : "asset:v1", "CHAINCODE_SERVER_ADDRESS" : "localhost:5999", "CORE_PEER_LOCALMSPID" : Settings.singleOrgSettings.msp
+  };
 
   static spdrLinkMessageShown: number = 0;
 }

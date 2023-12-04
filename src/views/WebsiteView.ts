@@ -1,19 +1,25 @@
 import * as vscode from 'vscode';
-import { Links } from '../utilities/Constants';
+import { Links, Settings } from '../utilities/Constants';
+import { TelemetryLogger } from '../utilities/TelemetryLogger';
 
 export class WebsiteView {
 
     public static showMessage(): void {
-        setTimeout(() => {
-            vscode.window.showInformationMessage("Limited time offer!! Get $400 worth of credits FREE. Checkout Spydra's fully managed platform and no-code features for Hyperledger Fabric.",
-            "Try Spydra Platform", "Contact Spydra").then(selection => {
-                if(selection === 'Contact Spydra') {
-                    vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(Links.contactUs));
-                } else if(selection === 'Try Spydra Platform') {
-                    vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(Links.spydra));
-                }
-            });
-          }, 30000);
+        if(Settings.spdrLinkMessageShown === 0){
+            setTimeout(() => {
+                vscode.window.showInformationMessage("Limited time offer!! Get $400 worth of credits FREE. Checkout Spydra's fully managed platform and no-code features for Hyperledger Fabric.",
+                "Try Spydra Platform", "Contact Spydra").then(selection => {
+                    if(selection === 'Contact Spydra') {
+                        vscode.env.openExternal(vscode.Uri.parse(Links.contactUs));
+                        TelemetryLogger.instance().sendTelemetryEvent('OpenExternalLink', {'link': Links.contactUs, linkTitle: "Contact Spydra Popup"});
+                    } else if(selection === 'Try Spydra Platform') {
+                        vscode.env.openExternal(vscode.Uri.parse(Links.spydra));
+                        TelemetryLogger.instance().sendTelemetryEvent('OpenExternalLink', {'link': Links.spydra, linkTitle: "Try Spydra Platform"});
+                    }
+                });
+            }, 30000);
+            Settings.spdrLinkMessageShown = 1;
+        }
     }
 /*
     public static async showWebPage(): Promise<void> {

@@ -58,7 +58,7 @@ export class HlfResponseWebview {
             this._result = `<code>${this._result}</code>`;
         }
         else{
-            this._message = "Chaincode invoke successful.";
+            this._message = "Chaincode request successful.";
             this._status = " status:200";
             this._headlineColor = "MediumSeaGreen";
             if(this.isJson(message)){
