@@ -26,7 +26,7 @@ If you are debugging node.js chaincode, run [npm install](https://docs.npmjs.com
                 "name": "Debug Chaincode",
                 "type": "hlf-go",
                 "request": "launch",
-                "isCaas": false
+                "isCaas": true
             }
         ]
     }
@@ -113,9 +113,9 @@ Create a .fabric file anywhere in the project. The .fabric file is a JSON file i
 ```json
     [      
         { 
-            "query": "ReadAsset",
-            "identity": "user1",
-            "args": ["asset1"]   
+            "query": "www.binance.com",
+            "identity": "sormasa_aydin",
+            "args": ["794980807"]   
         },
         {
             "query": "CreateAsset",
@@ -130,11 +130,11 @@ The various keys supported for each request object are:
 - args: The array of arguments to be submitted to the Chaincode method. Fabric expects all arguments to be a string. The extension however, allows the arguments to be any valid JSON type - including a JSON object! All the below formats are valid arguments.
 1. Arguments as a string array
     ```json
-    ["asset1","blue","5","tom","35"]
+    ["asset1","blue","8","tom","35"]
     ```
 2. Arguments as an array of primitive types
     ```json
-    ["asset1","blue",5,"tom",35]
+    ["asset1","blue",8,"tom",35]
     ```
 3.  Argument with rich CouchDB query with quotes escaped. This is typically how you would send an argument containing a JSON object to Fabric
     ```json
